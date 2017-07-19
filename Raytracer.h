@@ -16,13 +16,13 @@ public:
 	RayTracer() { cameras[0] = Camera(); cameras[1] = Camera(); width = 500; height = 500; }
 	RayTracer(Camera cam[2], float w, float h) { cameras[0] = cam[0], cameras[1] = cam[1]; width = w; height = h; }
 
-	void trace(Sphere sphere, Quad quad, Vector3 light, int samples, const char * file)
+	void trace(std::vector<Sphere> spheres, std::vector<Quad> quads, Vector3 light, int samples, const char * file)
 	{
 		std::ofstream out(file);
 		out << "P3\n" << width * 2 << ' ' << height << ' ' << "255\n";
 		Vector3 color;
 		Camera camera = cameras[0];
-		float offset = -width / 10.0f;
+		float offset = width / 10.0f;
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width * 2; x++) {
 
@@ -42,50 +42,50 @@ public:
 
 					//create new ray
 					Vector3 newPos = Vector3(camera.position.x + (r*cos(t)), camera.position.y + (r*sin(t)), camera.position.z);
-					Ray ray = Ray(newPos, Vector3((x % width + offset), y, 0));
+					Ray ray = Ray(camera.position, Vector3((x % width ), y, 0));
 
 					//find intersections and set color
 					float spT, qdT;
 
-					//Sphere *sph = checkSphereIntersect(ray, spheres);
-					//Quad qd;
-					bool sphInter = sphere.intersect(ray, spT);
-					//if (sph != nullptr) {
-					//	//sph = &spheres[0];
-					//	sphInter = sph->intersect(ray, spT);
-					//}
-					bool qdInter = quad.intersect(ray, qdT);
+					Sphere *sph = checkSphereIntersect(ray, spheres);
+					Quad   *qd = checkQuadIntersect(ray, quads);
+					bool sphInter = false;
+					if (sph != nullptr) 
+						sphInter = sph->intersect(ray, spT);
+					
+					bool qdInter = false;
+					if (qd != nullptr)
+						qdInter = qd->intersect(ray, qdT);
 
 					if (sphInter && qdInter) {
 						if (spT < qdT) {
 							Vector3 pos = ray.origin + (ray.direction - ray.origin) * spT;
-							Vector3 norm = (pos - sphere.center).normalize();
+							Vector3 norm = (pos - sph->center).normalize();
 							float dif = std::max(0.0f, norm.dot((light - pos).normalize()));
-							if (sphere.texMap)
-								color = color + sphere.getTex(norm) * dif;
+							if (sph->texMap)
+								color = color + sph->getTex(norm) * dif;
 							else
-								color = color + sphere.color *dif;
+								color = color + sph->color *dif;
 						}
 						else {
 							Vector3 pos = (ray.direction - ray.origin) * qdT + ray.origin;
-							float dif = std::max(0.0f, quad.normal.dot((light - pos).normalize()));
-							if (quad.texMap)
-								color = color + quad.getTex(pos) * dif;
+							float dif = std::max(0.0f, qd->normal.dot((light - pos).normalize()));
+							if (qd->texMap)
+								color = color + qd->getTex(pos) * dif;
 							else
-								color = color + quad.color * dif;
+								color = color + qd->color * dif;
 						}
 					}
 
 					if (sphInter&&!qdInter)
 					{
 						Vector3 pos = ray.origin + (ray.direction - ray.origin) * spT;
-						Vector3 norm = (pos - sphere.center).normalize();
+						Vector3 norm = (pos - sph->center).normalize();
 						float dif = std::max(0.0f, norm.dot((light - pos).normalize()));
-						if (sphere.texMap)
-							color = color + sphere.getTex(norm) * dif;
+						if (sph->texMap)
+							color = color + sph->getTex(norm) * dif;
 						else
-							color = color + sphere.color *dif;
-						//color = color + WHITE + WHITE;
+							color = color + sph->color *dif;
 					}
 					else 
 						color = color + BLACK;
@@ -93,11 +93,11 @@ public:
 					 if (qdInter&&!sphInter)
 					{
 						 Vector3 pos = (ray.direction - ray.origin) * qdT + ray.origin;
-						 float dif = std::max(0.0f, quad.normal.dot((light - pos).normalize()));
-						 if (quad.texMap)
-							 color = color + quad.getTex(pos) * dif;
+						 float dif = std::max(0.0f, qd->normal.dot((light - pos).normalize()));
+						 if (qd->texMap)
+							 color = color + qd->getTex(pos) * dif;
 						 else
-							 color = color + quad.color * dif;
+							 color = color + qd->color * dif;
 					}
 					else
 						color = color + BLACK;
@@ -129,7 +129,8 @@ public:
 		return sOut;
 	}
 
-	bool checkQuadIntersect(Ray ray, std::vector<Quad> quads, Quad *qOut) {
+	Quad* checkQuadIntersect(Ray ray, std::vector<Quad> quads) {
+		Quad* qOut = nullptr;
 		float minQuad = 10000000000, t;
 		for (int q = 0; q < quads.size(); q++) {
 			if (quads[q].intersect(ray, t)) {
@@ -139,7 +140,7 @@ public:
 				}
 			}
 		}
-		return (qOut != NULL);
+		return qOut;
 	}
 	
 	
