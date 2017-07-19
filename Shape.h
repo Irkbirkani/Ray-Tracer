@@ -88,7 +88,7 @@ public:
 		Vector3 n = Vector3(0, 0, -1), Vector3 col = WHITE, bool tm = false, Image img = NULL) {
 		A = a; B = b; C = c; D = d; normal = n; color = col; texMap = tm;image = img;
 	}
-	bool intersect(Ray ray, Vector3 &p)
+	bool intersect(Ray ray, float &t)
 	{
 		Vector3 dir = ray.direction - ray.origin;
 		Vector3 AB = B - A, AD = D - A;
@@ -98,7 +98,7 @@ public:
 		v = (-A.x * AB.y + A.y * AB.x - AB.x * P.y + AB.y * P.x) / (AB.y * AD.x - AB.x * AD.y);
 		if ((0<u && u<1) && (0<v && v<1))
 		{
-			p = P;
+			t = d;
 			return true;
 		}
 		return false;

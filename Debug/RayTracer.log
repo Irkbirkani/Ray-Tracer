@@ -9,9 +9,8 @@ c:\users\localadmin\documents\visual studio 2015\projects\raytracer\shape.h(115)
 c:\users\localadmin\documents\visual studio 2015\projects\raytracer\raytracer.h(17): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
 c:\users\localadmin\documents\visual studio 2015\projects\raytracer\raytracer.h(32): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
 c:\users\localadmin\documents\visual studio 2015\projects\raytracer\raytracer.h(45): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-c:\users\localadmin\documents\visual studio 2015\projects\raytracer\raytracer.h(101): warning C4018: '<': signed/unsigned mismatch
-c:\users\localadmin\documents\visual studio 2015\projects\raytracer\raytracer.h(113): warning C4305: 'argument': truncation from '__int64' to 'float'
-c:\users\localadmin\documents\visual studio 2015\projects\raytracer\raytracer.h(114): warning C4018: '<': signed/unsigned mismatch
+c:\users\localadmin\documents\visual studio 2015\projects\raytracer\raytracer.h(121): warning C4018: '<': signed/unsigned mismatch
+c:\users\localadmin\documents\visual studio 2015\projects\raytracer\raytracer.h(134): warning C4018: '<': signed/unsigned mismatch
 c:\users\localadmin\documents\visual studio 2015\projects\raytracer\main.cpp(8): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
 c:\users\localadmin\documents\visual studio 2015\projects\raytracer\main.cpp(13): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
 c:\users\localadmin\documents\visual studio 2015\projects\raytracer\main.cpp(17): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data

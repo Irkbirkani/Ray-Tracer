@@ -29,7 +29,7 @@ int main() {
 	
 	Vector3 light = Vector3(width / 2.0f, height / 2.0f, -100);
 
-	rt.trace(sphere, quad, light, 25, "ray-trace/ray-trace21.ppm");
+	rt.trace(sphere, quad, light, 25, "DoF/dof8.ppm");
 
 	return 0;
 }
