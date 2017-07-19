@@ -84,7 +84,7 @@ public:
 	Vector3 A, B, C, D, normal, color;
 	Image image;
 	bool texMap;
-	Quad(Vector3 a = Vector3(0, 0, 500), Vector3 b = Vector3(500, 0, 100), Vector3 c = Vector3(500, 500, 100), Vector3 d = Vector3(0, 500, 100),
+	Quad(Vector3 a = Vector3(0, 0, 100), Vector3 b = Vector3(500, 0, 100), Vector3 c = Vector3(500, 500, 100), Vector3 d = Vector3(0, 500, 100),
 		Vector3 n = Vector3(0, 0, -1), Vector3 col = WHITE, bool tm = false, Image img = NULL) {
 		A = a; B = b; C = c; D = d; normal = n; color = col; texMap = tm;image = img;
 	}
@@ -104,13 +104,7 @@ public:
 		return false;
 	}
 
-	void getQuadUV(Vector3 P, float &u, float &v)
-	{
-		Vector3 AB = B - A, AD = D - A;
-		u = (-A.x * AD.y + A.y * AD.x - AD.x * P.y + AD.y * P.x) / (AB.x * AD.y - AB.y * AD.x);
-		v = (-A.x * AB.y + A.y * AB.x - AB.x * P.y + AB.y * P.x) / (AB.y * AD.x - AB.x * AD.y);
-	}
-
+	
 	Vector3 getTex(Vector3 pos) {
 
 		int s, t;

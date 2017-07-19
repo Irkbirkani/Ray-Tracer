@@ -15,7 +15,7 @@ int main() {
 	float num = 1;
 	std::vector<Sphere> spheres;
 	spheres.resize(num*num*num);
-	std::vector<Quad> quad;
+	std::vector<Quad> quads;
 
 	for (float x = 0; x < num; x++) {
 		for (float y = 0; y < num; y++) {
@@ -24,10 +24,12 @@ int main() {
 			}
 		}
 	}
+	Sphere sphere(Vector3(0, height/2, 100), 100.0f, WHITE, true, Image("Images/cobblestone.jpg"));
+	Quad quad;
 	
 	Vector3 light = Vector3(width / 2.0f, height / 2.0f, -100);
 
-	rt.trace(spheres, quad, light, 25, "Scene/scene13.ppm");
+	rt.trace(sphere, quad, light, 25, "ray-trace/ray-trace21.ppm");
 
 	return 0;
 }

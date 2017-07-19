@@ -16,7 +16,7 @@ public:
 	RayTracer() { cameras[0] = Camera(); cameras[1] = Camera(); width = 500; height = 500; }
 	RayTracer(Camera cam[2], float w, float h) { cameras[0] = cam[0], cameras[1] = cam[1]; width = w; height = h; }
 
-	void trace(std::vector<Sphere> &spheres, std::vector<Quad> quads, Vector3 light, int samples, const char * file)
+	void trace(Sphere sphere, Quad quad, Vector3 light, int samples, const char * file)
 	{
 		std::ofstream out(file);
 		out << "P3\n" << width * 2 << ' ' << height << ' ' << "255\n";
@@ -47,33 +47,37 @@ public:
 					//find intersections and set color
 					float spT;
 					Vector3 P;
-					Sphere *sph = checkSphereIntersect(ray, spheres);
-					Quad qd;
-					bool sphInter = false;
-					if (sph != nullptr) {
-						//sph = &spheres[0];
-						sphInter = sph->intersect(ray, spT);
-					}
-					bool qdInter = false;// qd.intersect(ray, P);
+					//Sphere *sph = checkSphereIntersect(ray, spheres);
+					//Quad qd;
+					bool sphInter = sphere.intersect(ray, spT);
+					//if (sph != nullptr) {
+					//	//sph = &spheres[0];
+					//	sphInter = sph->intersect(ray, spT);
+					//}
+					bool qdInter = quad.intersect(ray, P);
 
 
 					if (sphInter)
 					{
 						Vector3 pos = ray.origin + (ray.direction - ray.origin) * spT;
-						Vector3 norm = (pos - sph->center).normalize();
-						float dif = norm.dot((light - pos).normalize());
-						if (sph->texMap)
-							color = color + sph->getTex(norm) * dif;
+						Vector3 norm = (pos - sphere.center).normalize();
+						float dif = std::max(0.0f, norm.dot((light - pos).normalize()));
+
+						if(dif > 1 || dif < 0)
+							printf("dif = %f x = %d, y = %d\n", dif,x,y);
+						if (sphere.texMap)
+							color = color + sphere.getTex(norm) * dif;
 						else
-							color = color + sph->color * dif;
+							color = color + sphere.color *dif;
+						//color = color + WHITE + WHITE;
 					}
-					else if (qdInter)
+					 else if (qdInter)
 					{
-						float dif = qd.normal.dot((light - P).normalize());
-						if (qd.texMap)
-							color = color + qd.getTex(P) * dif;
+						float dif = std::max(0.0f, quad.normal.dot((light - P).normalize()));
+						if (quad.texMap)
+							color = color + quad.getTex(P) * dif;
 						else
-							color = color + qd.color * dif;
+							color = color + quad.color * dif;
 					}
 					else
 						color = color + BLACK;
