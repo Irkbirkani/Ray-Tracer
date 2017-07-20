@@ -22,7 +22,7 @@ public:
 		out << "P3\n" << width * 2 << ' ' << height << ' ' << "255\n";
 		Vector3 color;
 		Camera camera = cameras[0];
-		float offset = width / 10.0f;
+		float offset = -width / 10.0f;
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width * 2; x++) {
 
@@ -42,7 +42,7 @@ public:
 
 					//create new ray
 					Vector3 newPos = Vector3(camera.position.x + (r*cos(t)), camera.position.y + (r*sin(t)), camera.position.z);
-					Ray ray = Ray(camera.position, Vector3((x % width ), y, 0));
+					Ray ray = Ray(newPos, Vector3((x % width + offset), y, 0));
 
 					//find intersections and set color
 					float spT, qdT;

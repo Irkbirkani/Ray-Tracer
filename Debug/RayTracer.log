@@ -11,8 +11,8 @@ c:\users\localadmin\documents\visual studio 2015\projects\raytracer\raytracer.h(
 c:\users\localadmin\documents\visual studio 2015\projects\raytracer\raytracer.h(45): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
 c:\users\localadmin\documents\visual studio 2015\projects\raytracer\raytracer.h(121): warning C4018: '<': signed/unsigned mismatch
 c:\users\localadmin\documents\visual studio 2015\projects\raytracer\raytracer.h(135): warning C4018: '<': signed/unsigned mismatch
-c:\users\localadmin\documents\visual studio 2015\projects\raytracer\main.cpp(8): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
 c:\users\localadmin\documents\visual studio 2015\projects\raytracer\main.cpp(13): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
 c:\users\localadmin\documents\visual studio 2015\projects\raytracer\main.cpp(17): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
-c:\users\localadmin\documents\visual studio 2015\projects\raytracer\main.cpp(27): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-LINK : fatal error LNK1201: error writing to program database 'C:\Users\localadmin\Documents\Visual Studio 2015\Projects\RayTracer\Debug\RayTracer.pdb'; check for insufficient disk space, invalid path, or insufficient privilege
+c:\users\localadmin\documents\visual studio 2015\projects\raytracer\main.cpp(23): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+  RayTracer.vcxproj -> C:\Users\localadmin\Documents\Visual Studio 2015\Projects\RayTracer\Debug\RayTracer.exe
+  RayTracer.vcxproj -> C:\Users\localadmin\Documents\Visual Studio 2015\Projects\RayTracer\Debug\RayTracer.pdb (Partial PDB)
