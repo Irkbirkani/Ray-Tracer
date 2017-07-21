@@ -36,6 +36,12 @@ void map(float in, float in_min, float in_max, float out_min, float out_max, int
 	out = (in - in_min) * slope + out_min;
 }
 
+float map(float in, float in_min, float in_max, float out_min, float out_max)
+{
+	float slope = (out_max - out_min) / (in_max - in_min);
+	return (in - in_min) * slope + out_min;
+}
+
 
 class Ray {
 public:

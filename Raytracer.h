@@ -13,16 +13,17 @@ public:
 	Camera cameras[2]; //0 = Left eye, 1 = right eye
 	int width, height;
 
-	RayTracer() { cameras[0] = Camera(); cameras[1] = Camera(); width = 500; height = 500; }
+	RayTracer() { cameras[0] = Camera(); cameras[1] = Camera(); width = 672; height = 800; }
 	RayTracer(Camera cam[2], float w, float h) { cameras[0] = cam[0], cameras[1] = cam[1]; width = w; height = h; }
 
-	void trace(std::vector<Sphere> spheres, std::vector<Quad> quads, Vector3 light, int samples, const char * file)
+	void trace(float z, std::vector<Sphere> spheres, std::vector<Quad> quads, Vector3 light, int samples, const char * file)
 	{
 		std::ofstream out(file);
 		out << "P3\n" << width * 2 << ' ' << height << ' ' << "255\n";
 		Vector3 color;
 		Camera camera = cameras[0];
 		float offset = -width / 10.0f;
+		float w = width / 2 + (width / 2 * z) / -camera.position.z, h = height / 2 + (height / 2 * z) / -camera.position.z;
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width * 2; x++) {
 
@@ -42,7 +43,8 @@ public:
 
 					//create new ray
 					Vector3 newPos = Vector3(camera.position.x + (r*cos(t)), camera.position.y + (r*sin(t)), camera.position.z);
-					Ray ray = Ray(newPos, Vector3((x % width + offset), y, 0));
+					float newX = (x % width) * (2 * w / width) - w + offset, newY = y*(2 * h / height) - h;
+					Ray ray = Ray(newPos, Vector3(newX, newY, z));
 
 					//find intersections and set color
 					float spT, qdT;
