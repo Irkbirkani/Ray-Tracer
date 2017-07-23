@@ -5,11 +5,15 @@
 #include <cmath>
 
 #define PI 3.1415926535f
-#define WHITE Vector3(255, 255, 255)
-#define BLACK Vector3(0,   0,   0)
-#define RED   Vector3(255, 0,   0)
-#define GREEN Vector3(0,   255, 0)
-#define BLUE  Vector3(0,   0,   255)
+#define WHITE   Vector3(255, 255, 255)
+#define BLACK   Vector3(0,   0,   0)
+#define RED     Vector3(255, 0,   0)
+#define GREEN   Vector3(0,   255, 0)
+#define BLUE    Vector3(0,   0,   255)
+#define CYAN    Vector3(0,   255, 255)
+#define YELLOW  Vector3(255, 255, 0)
+#define MAGENTA Vector3(255, 0,   255)
+#define PURPLE  Vector3(102, 51,  153)
 
 
 struct Vector3 {
