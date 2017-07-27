@@ -29,7 +29,7 @@ int main() {
 	
 	Vector3 light = Vector3(0, 0, -100);
 
-	rt.trace(480, spheres, quads, light, 1000, "stereo/stereoTest66.ppm");
+	rt.stereoTrace(480, spheres, quads, light, 1000, "stereo/stereoTest66.ppm");
 
 	return 0;
 }

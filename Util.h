@@ -46,6 +46,12 @@ float map(float in, float in_min, float in_max, float out_min, float out_max)
 	return (in - in_min) * slope + out_min;
 }
 
+class Lens {
+	Sphere lens;
+	float refracIdx;
+	Lens() { lens = Sphere(); refracIdx = 1.0f; }
+	Lens(Sphere l, float refractionIndex) { lens = l; refracIdx = refractionIndex; }
+};
 
 class Ray {
 public:
