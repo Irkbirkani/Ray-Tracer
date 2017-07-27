@@ -12,7 +12,7 @@ int main() {
 	Camera cameras[2] = { left,right };
 	RayTracer rt = RayTracer(cameras, width, height);
 
-	float num = 1;
+	float num = 5;
 	std::vector<Sphere> spheres;
 	spheres.resize(num*num*num);
 	std::vector<Quad> quads;
@@ -29,7 +29,7 @@ int main() {
 	
 	Vector3 light = Vector3(0, 0, -100);
 
-	rt.trace(0, spheres, quads, light, 1000, "DoF/dof9.ppm");
+	rt.trace(480, spheres, quads, light, 1000, "stereo/stereoTest66.ppm");
 
 	return 0;
 }
