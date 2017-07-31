@@ -1,9 +1,10 @@
 #include <stdio.h>
 #include "Raytracer.h"
-#include "Image.h"
 
 
 int main() {
+
+	//Set the camera locations and create the Ray Tracer.
 	int width = 500, height = 500;
 	float stereoOffset = width / 10.0f;
 
@@ -12,6 +13,8 @@ int main() {
 	Camera cameras[2] = { left,right };
 	RayTracer rt = RayTracer(cameras, width, height);
 
+
+	//Create the Scene.
 	float num = 2;
 	std::vector<Sphere> spheres;
 	spheres.resize(num*num*num);
@@ -29,6 +32,7 @@ int main() {
 	
 	Vector3 light = Vector3(0, 0, -100);
 
+	//Trace the scen.
 	rt.trace(-100, spheres, quads, light, 1, "Lens/lens1.ppm");
 
 	return 0;

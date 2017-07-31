@@ -4,7 +4,6 @@
 #include <vector>
 
 #include "Shape.h"
-#include "Camera.h"
 
 
 
@@ -13,17 +12,23 @@ public:
 	Camera cameras[2]; //0 = Left eye, 1 = right eye
 	int width, height;
 
-	RayTracer() { cameras[0] = Camera(); cameras[1] = Camera(); width = 672; height = 800; }
+	RayTracer() { cameras[0] = Camera(); cameras[1] = Camera(); width = 500; height = 500; }
 	RayTracer(Camera cam[2], float w, float h) { cameras[0] = cam[0], cameras[1] = cam[1]; width = w; height = h; }
 
 	//Render a stereo image of the scene
 	void stereoTrace(float z, std::vector<Sphere> spheres, std::vector<Quad> quads, Vector3 light, int samples, const char * file)
 	{
+		//Open the output stream and set the paramaters for the ppm file.
 		std::ofstream out(file);
 		out << "P3\n" << width * 2 << ' ' << height << ' ' << "255\n";
+
+		//Create color and set the camera to the left eye.
 		Vector3 color;
 		Camera camera = cameras[0];
+
+		//Calculate the stereo offset for the left eye.
 		float offset = -width / 10.0f;
+		//Find adjustment amout for x and y.
 		float w = width / 2 + (width / 2 * z) / -camera.position.z, h = height / 2 + (height / 2 * z) / -camera.position.z;
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width * 2; x++) {
@@ -34,7 +39,7 @@ public:
 					offset = width / 10.0;
 				}
 				//reset color
-				color = Vector3(0, 0, 0);
+				color = Vector3();
 				for (int s = 0; s < samples; s++) {
 
 					//find new random camera position
@@ -47,11 +52,13 @@ public:
 					float newX = (x % width) * (2 * w / width) - w + offset, newY = y*(2 * h / height) - h;
 					Ray ray = Ray(newPos, Vector3(newX, newY, z) - newPos);
 
-					//find intersections and set color
 					float spT, qdT;
 
+					//Find the closest sphere and quad in the scene.
 					Sphere *sph = checkSphereIntersect(ray, spheres);
 					Quad   *qd = checkQuadIntersect(ray, quads);
+
+					//Check and see if sph and qd are not nullptrs. Of they are then there was no intersections.
 					bool sphInter = false;
 					if (sph != nullptr) 
 						sphInter = sph->intersect(ray, spT);
@@ -60,6 +67,7 @@ public:
 					if (qd != nullptr)
 						qdInter = qd->intersect(ray, qdT);
 
+					//If there are intersections between both a sphere and a quad then return the color of the one that is closer.
 					if (sphInter && qdInter) {
 						if (spT < qdT) {
 							Vector3 pos = ray.origin + ray.direction * spT;
@@ -80,6 +88,7 @@ public:
 						}
 					}
 
+					//Return the color of a sphere.
 					if (sphInter&&!qdInter)
 					{
 						Vector3 pos = ray.origin + ray.direction * spT;
@@ -93,6 +102,8 @@ public:
 					else 
 						color = color + BLACK;
 
+
+					//return the color of a quad.
 					 if (qdInter&&!sphInter)
 					{
 						 Vector3 pos = ray.direction * qdT + ray.origin;
@@ -120,10 +131,15 @@ public:
 	//Render an image of the scene. Uses Camera[0] for calculations.
 	void trace(float z, std::vector<Sphere> spheres, std::vector<Quad> quads, Vector3 light, int samples, const char * file)
 	{
+		//Open the output stream and set the paramaters for the ppm file.
 		std::ofstream out(file);
 		out << "P3\n" << width << ' ' << height << ' ' << "255\n";
+
+		//Create color and set the camera to the left eye.
 		Vector3 color;
 		Camera camera = cameras[0];
+
+		//Find adjustment amout for x and y.
 		float w = width / 2 + (width / 2 * z) / -camera.position.z, h = height / 2 + (height / 2 * z) / -camera.position.z;
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
@@ -142,21 +158,22 @@ public:
 					float newX = x*(2 * w / width) - w, newY = y*(2 * h / height) - h;
 					Ray ray = Ray(camera.position, Vector3(newX, newY, z) - camera.position);
 
-					//find intersections and set color
 					float spT, qdT;
 
+					//Find the closest sphere and quad in the scene.
 					Sphere *sph = checkSphereIntersect(ray, spheres);
 					Quad   *qd = checkQuadIntersect(ray, quads);
 
+					//Check and see if sph and qd are not nullptrs. Of they are then there was no intersections.
 					bool sphInter = false;
 					if (sph != nullptr)
 						sphInter = sph->intersect(ray, spT);
 					
-
 					bool qdInter = false;
 					if (qd != nullptr)
 						qdInter = qd->intersect(ray, qdT);
 
+					//If there are intersections between both a sphere and a quad then return the color of the one that is closer.
 					if (sphInter && qdInter) {
 						if (spT < qdT) {
 							Vector3 pos = ray.origin + ray.direction * spT;
@@ -177,6 +194,7 @@ public:
 						}
 					}
 
+					//Return the color of a sphere.
 					if (sphInter && !qdInter)
 					{
 						Vector3 pos = ray.origin + ray.direction * spT;
@@ -192,6 +210,7 @@ public:
 					else
 						color = color + BLACK;
 
+					//return the color of a quad.
 					if (qdInter && !sphInter)
 					{
 						Vector3 pos = ray.direction * qdT + ray.origin;
@@ -213,6 +232,7 @@ public:
 		}
 	}
 
+	//Find the closest sphere with an intersection with the ray.
 	Sphere* checkSphereIntersect(Ray ray, std::vector<Sphere> &spheres) {
 		Sphere *sOut = nullptr;
 		float minSphere = 10000000000, t;
@@ -227,6 +247,7 @@ public:
 		return sOut;
 	}
 
+	//Find the closest quad with an intersection with the ray.
 	Quad* checkQuadIntersect(Ray ray, std::vector<Quad> quads) {
 		Quad* qOut = nullptr;
 		float minQuad = 10000000000, t;
@@ -240,6 +261,4 @@ public:
 		}
 		return qOut;
 	}
-	
-	
 };
