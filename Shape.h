@@ -12,18 +12,17 @@ public:
 	Sphere(Vector3 c = Vector3(), float r = 1000, Vector3 col = WHITE, bool tm = false, Image img = NULL) { center = c; radius = r; color = col; texMap = tm; image = img; }
 	bool intersect(Ray ray, float &t)
 	{
-		Vector3 p1 = ray.origin;    // Camera location
-		Vector3 p2 = ray.direction; // Pixel being traced
-		float a = (p2.x - p1.x) * (p2.x - p1.x) + // x
-			(p2.y - p1.y) * (p2.y - p1.y) + // y
-			(p2.z - p1.z) * (p2.z - p1.z);  // z
-		float b = ((p2.x - p1.x) * (p1.x - center.x) +
-			(p2.y - p1.y) * (p1.y - center.y) +
-			(p2.z - p1.z) * (p1.z - center.z)) * 2;
-		float c = (p1.x - center.x) * (p1.x - center.x) +
-			(p1.y - center.y) * (p1.y - center.y) +
-			(p1.z - center.z) * (p1.z - center.z) -
-			(radius * radius);
+		float a =  ray.direction.x * ray.direction.x +
+				   ray.direction.y * ray.direction.y +
+				   ray.direction.z * ray.direction.z;
+		float b = (ray.direction.x * (ray.origin.x - center.x) +
+			       ray.direction.y * (ray.origin.y - center.y) +
+			       ray.direction.z * (ray.origin.z - center.z)) * 2;
+		float c = (ray.origin.x - center.x) * (ray.origin.x - center.x) +
+			      (ray.origin.y - center.y) * (ray.origin.y - center.y) +
+			      (ray.origin.z - center.z) * (ray.origin.z - center.z) -
+			      (radius * radius);
+		//printf("a = %f b = %f c = %f\n", a, b, c);
 		float disc = (b * b) - (4 * a * c);
 
 		if (disc < 0)
@@ -104,7 +103,7 @@ public:
 		return false;
 	}
 
-	
+
 	Vector3 getTex(Vector3 pos) {
 
 		int s, t;
@@ -119,4 +118,17 @@ public:
 private:
 	float u, v;
 };
+
+
+class Lens {
+	Sphere lens;
+	float refracIdx;
+	Lens() { lens = Sphere(); refracIdx = 1.0f; }
+	Lens(Sphere l, float refractionIndex) { lens = l; refracIdx = refractionIndex; }
+
+	/*Ray refract(Ray ray) {
+
+	}*/
+};
+
 

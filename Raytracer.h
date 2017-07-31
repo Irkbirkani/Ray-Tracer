@@ -45,7 +45,7 @@ public:
 					//create new ray
 					Vector3 newPos = Vector3(camera.position.x + (r*cos(t)), camera.position.y + (r*sin(t)), camera.position.z);
 					float newX = (x % width) * (2 * w / width) - w + offset, newY = y*(2 * h / height) - h;
-					Ray ray = Ray(newPos, Vector3(newX, newY, z));
+					Ray ray = Ray(newPos, Vector3(newX, newY, z) - newPos);
 
 					//find intersections and set color
 					float spT, qdT;
@@ -62,7 +62,7 @@ public:
 
 					if (sphInter && qdInter) {
 						if (spT < qdT) {
-							Vector3 pos = ray.origin + (ray.direction - ray.origin) * spT;
+							Vector3 pos = ray.origin + ray.direction * spT;
 							Vector3 norm = (pos - sph->center).normalize();
 							float dif = std::max(0.0f, norm.dot((light - pos).normalize()));
 							if (sph->texMap)
@@ -71,7 +71,7 @@ public:
 								color = color + sph->color *dif;
 						}
 						else {
-							Vector3 pos = (ray.direction - ray.origin) * qdT + ray.origin;
+							Vector3 pos = ray.direction * qdT + ray.origin;
 							float dif = std::max(0.0f, qd->normal.dot((light - pos).normalize()));
 							if (qd->texMap)
 								color = color + qd->getTex(pos) * dif;
@@ -82,7 +82,7 @@ public:
 
 					if (sphInter&&!qdInter)
 					{
-						Vector3 pos = ray.origin + (ray.direction - ray.origin) * spT;
+						Vector3 pos = ray.origin + ray.direction * spT;
 						Vector3 norm = (pos - sph->center).normalize();
 						float dif = std::max(0.0f, norm.dot((light - pos).normalize()));
 						if (sph->texMap)
@@ -95,7 +95,7 @@ public:
 
 					 if (qdInter&&!sphInter)
 					{
-						 Vector3 pos = (ray.direction - ray.origin) * qdT + ray.origin;
+						 Vector3 pos = ray.direction * qdT + ray.origin;
 						 float dif = std::max(0.0f, qd->normal.dot((light - pos).normalize()));
 						 if (qd->texMap)
 							 color = color + qd->getTex(pos) * dif;
@@ -124,7 +124,6 @@ public:
 		out << "P3\n" << width << ' ' << height << ' ' << "255\n";
 		Vector3 color;
 		Camera camera = cameras[0];
-		float offset = -width / 10.0f;
 		float w = width / 2 + (width / 2 * z) / -camera.position.z, h = height / 2 + (height / 2 * z) / -camera.position.z;
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
@@ -141,16 +140,18 @@ public:
 					//create new ray
 					Vector3 newPos = Vector3(camera.position.x + (r*cos(t)), camera.position.y + (r*sin(t)), camera.position.z);
 					float newX = x*(2 * w / width) - w, newY = y*(2 * h / height) - h;
-					Ray ray = Ray(newPos, Vector3(newX, newY, z));
+					Ray ray = Ray(camera.position, Vector3(newX, newY, z) - camera.position);
 
 					//find intersections and set color
 					float spT, qdT;
 
 					Sphere *sph = checkSphereIntersect(ray, spheres);
 					Quad   *qd = checkQuadIntersect(ray, quads);
+
 					bool sphInter = false;
 					if (sph != nullptr)
 						sphInter = sph->intersect(ray, spT);
+					
 
 					bool qdInter = false;
 					if (qd != nullptr)
@@ -158,7 +159,7 @@ public:
 
 					if (sphInter && qdInter) {
 						if (spT < qdT) {
-							Vector3 pos = ray.origin + (ray.direction - ray.origin) * spT;
+							Vector3 pos = ray.origin + ray.direction * spT;
 							Vector3 norm = (pos - sph->center).normalize();
 							float dif = std::max(0.0f, norm.dot((light - pos).normalize()));
 							if (sph->texMap)
@@ -167,7 +168,7 @@ public:
 								color = color + sph->color *dif;
 						}
 						else {
-							Vector3 pos = (ray.direction - ray.origin) * qdT + ray.origin;
+							Vector3 pos = ray.direction * qdT + ray.origin;
 							float dif = std::max(0.0f, qd->normal.dot((light - pos).normalize()));
 							if (qd->texMap)
 								color = color + qd->getTex(pos) * dif;
@@ -178,9 +179,11 @@ public:
 
 					if (sphInter && !qdInter)
 					{
-						Vector3 pos = ray.origin + (ray.direction - ray.origin) * spT;
+						Vector3 pos = ray.origin + ray.direction * spT;
 						Vector3 norm = (pos - sph->center).normalize();
-						float dif = std::max(0.0f, norm.dot((light - pos).normalize()));
+						float dif = std::max(0.0f,norm.dot((light - pos).normalize()));
+						
+							//printf("dif = %f\n", norm.dot((light - pos).normalize()));
 						if (sph->texMap)
 							color = color + sph->getTex(norm) * dif;
 						else
@@ -191,7 +194,7 @@ public:
 
 					if (qdInter && !sphInter)
 					{
-						Vector3 pos = (ray.direction - ray.origin) * qdT + ray.origin;
+						Vector3 pos = ray.direction * qdT + ray.origin;
 						float dif = std::max(0.0f, qd->normal.dot((light - pos).normalize()));
 						if (qd->texMap)
 							color = color + qd->getTex(pos) * dif;

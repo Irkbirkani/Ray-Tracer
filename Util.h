@@ -31,6 +31,7 @@ struct Vector3 {
 		return Vector3(x / mg, y / mg, z / mg);
 	}
 	float distance(Vector3 v) { return sqrt((x - v.x) * (x - v.x) + (y - v.y)*(y - v.y) + (z - v.z)*(z - v.z)); }
+	float magnitude() { return sqrt(x*x + y*y + z*z); }
 };
 
 
@@ -45,13 +46,6 @@ float map(float in, float in_min, float in_max, float out_min, float out_max)
 	float slope = (out_max - out_min) / (in_max - in_min);
 	return (in - in_min) * slope + out_min;
 }
-
-class Lens {
-	Sphere lens;
-	float refracIdx;
-	Lens() { lens = Sphere(); refracIdx = 1.0f; }
-	Lens(Sphere l, float refractionIndex) { lens = l; refracIdx = refractionIndex; }
-};
 
 class Ray {
 public:
