@@ -34,7 +34,7 @@ public:
 		float t0 = (-b - sqrt(disc)) / (2 * a);
 		float t1 = (-b + sqrt(disc)) / (2 * a);
 
-		t = (t0 < t1) ? t0 : t1;
+		t = (t0 < t1 && std::min(t0,t1) > 0) ? t0 : t1;
 		return true;
 	}
 
@@ -130,6 +130,7 @@ private:
 };
 
 class Lens {
+public:
 	Sphere lens;
 	float refracIdx;
 	Lens() { lens = Sphere(); refracIdx = 1.0f; }
@@ -144,20 +145,33 @@ class Lens {
 		Vector3 norm = (pos - lens.center).normalize();
 
 		//Find the angle between the incoming ray and the normal.
-		float theta1 = ray.direction.getAngleBetween(norm);
+		float theta1 = (-ray.direction).getAngleBetween(norm);
 
 		//Find the angle between the refracted ray and the normal.
 		float theta2 = asin(1.0f*sin(theta1) / refracIdx);
 
-		//Rotate the vector to its new direction.
+		//Find the new direction.
 		Vector3 rotAxis = (ray.direction.cross(norm)).normalize();
-		Vector3 newDir = rotAroundAxis(rotAxis, ray.direction, theta2);
+		Vector3 newDir = rotAroundAxis(rotAxis, -norm, theta2);
 
 		//Find new origin of the ray coming out of the lens.
 		lens.intersect(Ray(pos, newDir), p);
 
+		//Find the normal at the new position.
+		pos = ray.origin + ray.direction * p;
+		norm = (pos - lens.center).normalize();
+
+		//Find angle between newDir and new normal.
+		theta1 = -newDir.getAngleBetween(-norm);
+
+		//Find the angle between the refracted ray and the normal.
+		theta2 = asin(refracIdx*sin(theta1) / 1.0f);
+
+		//Find the new direction.
+		 rotAxis = (newDir.cross(norm)).normalize();
+		 newDir = rotAroundAxis(rotAxis, -norm, theta2);
+
 		//Return the new ray.
 		return Ray(p, newDir);
-
 	}
 };

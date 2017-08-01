@@ -5,7 +5,7 @@
 int main() {
 
 	//Set the camera locations and create the Ray Tracer.
-	int width = 500, height = 500;
+	int width = 200, height = 200;
 	float stereoOffset = width / 10.0f;
 
 	Camera left  = Camera(Vector3(0, 0, -500), Vector3(0, 0, 1), Vector3(0, 1, 0), 10);
@@ -15,7 +15,7 @@ int main() {
 
 
 	//Create the Scene.
-	float num = 2;
+	float num = 5;
 	std::vector<Sphere> spheres;
 	spheres.resize(num*num*num);
 	std::vector<Quad> quads;
@@ -23,7 +23,7 @@ int main() {
 	for (float x = 0; x < num; x++) {
 		for (float y = 0; y < num; y++) {
 			for (float z = 0; z < num; z++) {
-				spheres[x * num * num + y * num + z] = Sphere(Vector3(map(x,0,num-1,-200,200), map(y,0,num-1,-200,200), map(z, 0, num - 1, 0, 600)), 50.0f, WHITE, true, Image("Images/blue-pentagons.jpg"));
+				spheres[x * num * num + y * num + z] = Sphere(Vector3(map(x,0,num-1,-90,90), map(y,0,num-1,-90,90), map(z, 0, num - 1, 0, 600)), 10.0f, WHITE, true, Image("Images/blue-pentagons.jpg"));
 			}
 		}
 	}
@@ -32,8 +32,8 @@ int main() {
 	
 	Vector3 light = Vector3(0, 0, -100);
 
-	//Trace the scen.
-	rt.trace(-100, spheres, quads, light, 1, "Lens/lens1.ppm");
+	//Trace the scene.
+	rt.trace(-100, spheres, quads, light, false, 1, "Lens/lens1.ppm");
 
 	return 0;
 }

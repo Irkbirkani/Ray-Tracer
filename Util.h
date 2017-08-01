@@ -37,6 +37,9 @@ struct Vector3 {
 	//Returns the difference between two vectors.
 	Vector3 operator - (const Vector3& v) const { return Vector3(x - v.x, y - v.y, z - v.z); }
 
+	//Returns the negative of a vector.
+	Vector3 operator - () { return Vector3(-x, -y, -z); }
+
 	//Return the product of a vector and a scalar.
 	Vector3 operator * (float d) const { return Vector3(x*d, y*d, z*d); }
 
@@ -89,17 +92,33 @@ public:
 
 //Rotates a vector around an arbitrary axis by a given amount.
 Vector3 rotAroundAxis(Vector3 axis, Vector3 vector, float theta) {
-	//Find the angles between passed in axis and the x and y axis.
-	float thetaX = axis.getAngleBetween(X_AXIS), thetaY = axis.getAngleBetween(Y_AXIS);
+
+	//If n.x & n.z are both zero, the rotation axis is Y
+	//(and the math below will blow up...) so special case:
+	if (axis.x == 0 && axis.z == 0) {
+		if (axis.y > 0) theta = -theta;
+		return vector.rotAroundY(theta);
+	}
+
+	//Find angle between axis and Y axis.
+	float phi = asin(axis.x / sqrt(axis.x*axis.x + axis.z*axis.z));
+	if (axis.z < 0) phi = PI - phi;
+
+	Vector3 n = axis.rotAroundY(phi);
+
+	//Find angle between axis and X axis.
+	float gamma = acos(n.dot(-Z_AXIS));
+	if (axis.y < 0) gamma = acos(n.dot(Z_AXIS));
 
 	//Rotate the vector around the X and Y axis my the previously found angles. This causes the passsed in axis to be on the Z axis.
-	Vector3 u = vector.rotAroundY(thetaY);
-	Vector3 v =      u.rotAroundX(thetaX);
+	Vector3 u = vector.rotAroundY(phi);
+	Vector3 v =      u.rotAroundX(gamma);
+	if (n.y > 0) theta = -theta;
 	//Rotate the vector around the Z axis by the passed in amount.
-	Vector3 w =      v.rotAroundX(theta );
+	Vector3 w =      v.rotAroundX(theta);
 	//Rotate the vector back around the X and Y axis.
-	Vector3 g =      w.rotAroundX(-thetaX);
-	return           g.rotAroundY(-thetaY);
+	Vector3 g =      w.rotAroundX(-phi);
+	return           g.rotAroundY(-gamma);
 }
 
 //A simple Image class.
