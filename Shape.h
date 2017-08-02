@@ -5,41 +5,41 @@ class Sphere {
 public:
 	Vector3 center, color;
 	Image image;
-	float radius;
+	double radius;
 	bool texMap;
-	Sphere(Vector3 c = Vector3(), float r = 1000, Vector3 col = WHITE, bool tm = false, Image img = NULL) { center = c; radius = r; color = col; texMap = tm; image = img; }
+	Sphere(Vector3 c = Vector3(), double r = 1000, Vector3 col = WHITE, bool tm = false, Image img = NULL) { center = c; radius = r; color = col; texMap = tm; image = img; }
 
 	//Returns true if a ray intersects with the sphere. The closest point of intersectoin is set as t.
-	bool intersect(Ray ray, float &t)
+	bool intersect(Ray ray, double &t)
 	{
 		//Calculate the a b and c values for the quadratic equation.
-		float a =  ray.direction.x * ray.direction.x +
+		double a =  ray.direction.x * ray.direction.x +
 				   ray.direction.y * ray.direction.y +
 				   ray.direction.z * ray.direction.z;
-		float b = (ray.direction.x * (ray.origin.x - center.x) +
+		double b = (ray.direction.x * (ray.origin.x - center.x) +
 			       ray.direction.y * (ray.origin.y - center.y) +
 			       ray.direction.z * (ray.origin.z - center.z)) * 2;
-		float c = (ray.origin.x - center.x) * (ray.origin.x - center.x) +
+		double c = (ray.origin.x - center.x) * (ray.origin.x - center.x) +
 			      (ray.origin.y - center.y) * (ray.origin.y - center.y) +
 			      (ray.origin.z - center.z) * (ray.origin.z - center.z) -
 			      (radius * radius);
 		//Calculate the discriminate of the quadratic equation.
-		float disc = (b * b) - (4 * a * c);
+		double disc = (b * b) - (4 * a * c);
 
 		//If the discriminate is less than 0 then there is no intersection and the funtion terminates.
 		if (disc < 0)
 			return false;
 
 		//Calculate the two points of intersection and set t to be the smaller.
-		float t0 = (-b - sqrt(disc)) / (2 * a);
-		float t1 = (-b + sqrt(disc)) / (2 * a);
+		double t0 = (-b - sqrt(disc)) / (2 * a);
+		double t1 = (-b + sqrt(disc)) / (2 * a);
 
-		t = (t0 < t1 && std::min(t0,t1) > 0) ? t0 : t1;
+		t = (t0 < t1 && std::min(t0,t1) > 0.001) ? t0 : t1;
 		return true;
 	}
 
 	//Returns the barycentric coordinates of a point on the sphere.
-	void getSphereUV(Vector3 normal, float &u, float &v)
+	void getSphereUV(Vector3 normal, double &u, double &v)
 	{
 		u = atan2(normal.x, normal.z) / (2 * PI) + 0.5f;
 		v = normal.y * 0.5f + 0.5f;
@@ -49,7 +49,7 @@ public:
 	Vector3 getTex(Vector3 normal) {
 
 		//Find the barycentric coordinates.
-		float u, v;
+		double u, v;
 		getSphereUV(normal, u, v);
 		//Map the barycentric coordinates to points on the texture.
 		int s = map(u, 0, 1, 0, image.width), t = map(v, 0, 1, 0, image.height);
@@ -73,7 +73,7 @@ public:
 	bool intersect(Ray ray, Vector3 &p)
 	{
 		Vector3 dir = ray.direction - ray.origin;
-		float d = ((center - ray.origin).dot(N)) / (dir.dot(N));
+		double d = ((center - ray.origin).dot(N)) / (dir.dot(N));
 
 		if (d <= 0)
 			return false;
@@ -95,11 +95,11 @@ public:
 	}
 
 	//Returns true if a Ray intersects with the Quad.
-	bool intersect(Ray ray, float &t)
+	bool intersect(Ray ray, double &t)
 	{
 		//Finds the point of intersection between the ray and the plane the quad is on.
 		Vector3 AB = B - A, AD = D - A;
-		float d = ((A - ray.origin).dot(normal)) / (ray.direction.dot(normal));
+		double d = ((A - ray.origin).dot(normal)) / (ray.direction.dot(normal));
 		Vector3 P = ray.direction * d + ray.origin;
 
 		//Finds the barycentric coordinates of the point of intesection.
@@ -126,29 +126,29 @@ public:
 	}
 
 private:
-	float u, v;
+	double u, v;
 };
 
 class Lens {
 public:
 	Sphere lens;
-	float refracIdx;
-	Lens() { lens = Sphere(); refracIdx = 1.0f; }
-	Lens(Sphere l, float refractionIndex) { lens = l; refracIdx = refractionIndex; }
+	double refracIdx;
+	Lens() { lens = Sphere(); refracIdx = 1.0; }
+	Lens(Sphere l, double refractionIndex) { lens = l; refracIdx = refractionIndex; }
 
 	Ray refract(Ray ray) {
 
 		//Find point of intersection on lens and find the normal at that point.
-		float p;
+		double p;
 		lens.intersect(ray, p);
 		Vector3 pos = ray.origin + ray.direction * p;
 		Vector3 norm = (pos - lens.center).normalize();
 
 		//Find the angle between the incoming ray and the normal.
-		float theta1 = (-ray.direction).getAngleBetween(norm);
+		double theta1 = (-ray.direction).getAngleBetween(norm);
 
 		//Find the angle between the refracted ray and the normal.
-		float theta2 = asin(1.0f*sin(theta1) / refracIdx);
+		double theta2 = asin(1.0*sin(theta1) / refracIdx);
 
 		//Find the new direction.
 		Vector3 rotAxis = (ray.direction.cross(norm)).normalize();
@@ -158,20 +158,25 @@ public:
 		lens.intersect(Ray(pos, newDir), p);
 
 		//Find the normal at the new position.
-		pos = ray.origin + ray.direction * p;
+		pos = pos + newDir * p;
 		norm = (pos - lens.center).normalize();
 
 		//Find angle between newDir and new normal.
-		theta1 = -newDir.getAngleBetween(-norm);
+		theta1 = (-newDir).getAngleBetween(-norm);
 
 		//Find the angle between the refracted ray and the normal.
-		theta2 = asin(refracIdx*sin(theta1) / 1.0f);
+		theta2 = asin(refracIdx*sin(theta1) / 1.0);
 
 		//Find the new direction.
 		 rotAxis = (newDir.cross(norm)).normalize();
-		 newDir = rotAroundAxis(rotAxis, -norm, theta2);
+		 newDir = rotAroundAxis(rotAxis, norm, theta2);
+
+		 Vector3 test = ray.direction.normalize();
+
+		// if ((newDir - ray.direction.normalize()).magnitude() > 0.0001)
+		//	 printf("Bad");
 
 		//Return the new ray.
-		return Ray(p, newDir);
+		return Ray(pos, newDir);
 	}
 };

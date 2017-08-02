@@ -23,13 +23,13 @@
 
 
 struct Vector3 {
-	float x, y, z;
+	double x, y, z;
 	Vector3() { x = y = z = 0; }
-	Vector3(float v) { x = y = z = v; }
-	Vector3(float x, float y, float z) : x(x), y(y), z(z) {}
+	Vector3(double v) { x = y = z = v; }
+	Vector3(double x, double y, double z) : x(x), y(y), z(z) {}
 
 	//Returns the dot product of two vectors.
-	float dot(Vector3 v) { return (x * v.x + y * v.y + z * v.z); }
+	double dot(Vector3 v) { return (x * v.x + y * v.y + z * v.z); }
 
 	//Returns the sum of two vectors.
 	Vector3 operator + (const Vector3& v) const { return Vector3(x + v.x, y + v.y, z + v.z); }
@@ -41,43 +41,43 @@ struct Vector3 {
 	Vector3 operator - () { return Vector3(-x, -y, -z); }
 
 	//Return the product of a vector and a scalar.
-	Vector3 operator * (float d) const { return Vector3(x*d, y*d, z*d); }
+	Vector3 operator * (double d) const { return Vector3(x*d, y*d, z*d); }
 
 	//Returns the quotient of a vector and a scalar.
-	Vector3 operator / (float d) const { return Vector3(x / d, y / d, z / d); }
+	Vector3 operator / (double d) const { return Vector3(x / d, y / d, z / d); }
 
 	//Returns the magnitude of a vector.
-	float magnitude() { return sqrt(x*x + y*y + z*z); }
+	double magnitude() { return sqrt(x*x + y*y + z*z); }
 
 	//Normalize the vector.
 	Vector3 normalize() const {
-		float mg = sqrt(x*x + y*y + z*z);
+		double mg = sqrt(x*x + y*y + z*z);
 		return Vector3(x / mg, y / mg, z / mg);
 	}
 
 	//Returns the distance between two vectors.
-	float distance(Vector3 v) { return sqrt((x - v.x) * (x - v.x) + (y - v.y)*(y - v.y) + (z - v.z)*(z - v.z)); }
+	double distance(Vector3 v) { return sqrt((x - v.x) * (x - v.x) + (y - v.y)*(y - v.y) + (z - v.z)*(z - v.z)); }
 	
 	//Returns the cross product of two vectors.
 	Vector3 cross(Vector3 v) { return Vector3(y*v.z - z*v.y, z*v.x - x*v.z, x*v.y - y*v.x); }
 
 	//Rotates the Vector around the X axis by a given amount.
-	Vector3 rotAroundX(float theta) { return Vector3(x, cos(theta)*y + (-sin(theta)*z), sin(theta)*y + cos(theta)*z); }
+	Vector3 rotAroundX(double theta) { return Vector3(x, cos(theta)*y + (-sin(theta)*z), sin(theta)*y + cos(theta)*z); }
 
 	//Rotates the Vector around the Y axis by a given amount.
-	Vector3 rotAroundY(float theta) { return Vector3(cos(theta)*x + (-sin(theta)*z), y, sin(theta)*x + cos(theta)*z); }
+	Vector3 rotAroundY(double theta) { return Vector3(cos(theta)*x + (-sin(theta)*z), y, sin(theta)*x + cos(theta)*z); }
 
 	//Rotates the Vector around the Z axis by a given amount.
-	Vector3 rotAroundZ(float theta) { return Vector3(cos(theta)*x + (-sin(theta)*y), sin(theta)*x + cos(theta)*y, z); }
+	Vector3 rotAroundZ(double theta) { return Vector3(cos(theta)*x + (-sin(theta)*y), sin(theta)*x + cos(theta)*y, z); }
 
 	//Retuns the angle between two vectors.
-	float getAngleBetween(Vector3 v) { return acos(this->dot(v) / (this->magnitude()*v.magnitude())); }
+	double getAngleBetween(Vector3 v) { return acos(this->dot(v) / (this->magnitude()*v.magnitude())); }
 };
 
 //Maps in to the a number between out_min and out_max.
-float map(float in, float in_min, float in_max, float out_min, float out_max)
+double map(double in, double in_min, double in_max, double out_min, double out_max)
 {
-	float slope = (out_max - out_min) / (in_max - in_min);
+	double slope = (out_max - out_min) / (in_max - in_min);
 	return (in - in_min) * slope + out_min;
 }
 
@@ -91,34 +91,32 @@ public:
 };
 
 //Rotates a vector around an arbitrary axis by a given amount.
-Vector3 rotAroundAxis(Vector3 axis, Vector3 vector, float theta) {
+Vector3 rotAroundAxis(Vector3 axis, Vector3 vector, double theta) {
 
-	//If n.x & n.z are both zero, the rotation axis is Y
-	//(and the math below will blow up...) so special case:
-	if (axis.x == 0 && axis.z == 0) {
-		if (axis.y > 0) theta = -theta;
-		return vector.rotAroundY(theta);
+	axis = axis.normalize();
+	Vector3 t = axis;
+	if (std::abs(std::abs(axis.x) - std::min(std::abs(axis.x), std::min(std::abs(axis.y), std::abs(axis.z)))) < 0.0001) {
+		t.x = 1;
 	}
+	else if (std::abs(std::abs(axis.y) - std::min(std::abs(axis.x), std::min(std::abs(axis.y), std::abs(axis.z)))) < 0.0001) {
+		t.y = 1;
+	}
+	else if (std::abs(std::abs(axis.z) - std::min(std::abs(axis.x), std::min(std::abs(axis.y), std::abs(axis.z)))) < 0.0001) {
+		t.z = 1;
+	}
+	Vector3 u = axis.cross(t).normalize();
+	Vector3 v = axis.cross(u);
 
-	//Find angle between axis and Y axis.
-	float phi = asin(axis.x / sqrt(axis.x*axis.x + axis.z*axis.z));
-	if (axis.z < 0) phi = PI - phi;
-
-	Vector3 n = axis.rotAroundY(phi);
-
-	//Find angle between axis and X axis.
-	float gamma = acos(n.dot(-Z_AXIS));
-	if (axis.y < 0) gamma = acos(n.dot(Z_AXIS));
-
-	//Rotate the vector around the X and Y axis my the previously found angles. This causes the passsed in axis to be on the Z axis.
-	Vector3 u = vector.rotAroundY(phi);
-	Vector3 v =      u.rotAroundX(gamma);
-	if (n.y > 0) theta = -theta;
-	//Rotate the vector around the Z axis by the passed in amount.
-	Vector3 w =      v.rotAroundX(theta);
-	//Rotate the vector back around the X and Y axis.
-	Vector3 g =      w.rotAroundX(-phi);
-	return           g.rotAroundY(-gamma);
+	Vector3 res = vector;
+	res = Vector3(u.x*res.x + u.y*res.y + u.z*res.z,
+		  v.x*res.x + v.y*res.y + v.z*res.z,
+		  axis.x*res.x + axis.y*res.y + axis.z*res.z);
+	res = Vector3(cos(theta)*res.x + sin(theta)*res.y,
+		  -sin(theta)*res.x + cos(theta)*res.y, res.z);
+	res = Vector3(u.x*res.x + v.x*res.y + axis.x*res.z,
+		  u.y*res.x + v.y*res.y + axis.y*res.z,
+		  u.z*res.x + v.z*res.y + axis.z*res.z);
+	return res;
 }
 
 //A simple Image class.
@@ -141,7 +139,7 @@ public:
 class Camera {
 public:
 	Vector3 position, direction, up;
-	float aperature;
+	double aperature;
 	Camera() {
 		position = Vector3(0, 0, -100);
 		direction = Vector3(0, 0, 1);
@@ -149,5 +147,5 @@ public:
 		aperature = 10;
 	}
 
-	Camera(Vector3 pos, Vector3 dir, Vector3 u, float a) { position = pos; direction = dir; up = u; aperature = a; }
+	Camera(Vector3 pos, Vector3 dir, Vector3 u, double a) { position = pos; direction = dir; up = u; aperature = a; }
 };

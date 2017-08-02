@@ -1,16 +1,10 @@
 ﻿  main.cpp
-c:\users\localadmin\documents\visual studio 2015\projects\raytracer\shape.h(55): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-c:\users\localadmin\documents\visual studio 2015\projects\raytracer\shape.h(55): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-c:\users\localadmin\documents\visual studio 2015\projects\raytracer\shape.h(59): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-c:\users\localadmin\documents\visual studio 2015\projects\raytracer\shape.h(120): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-c:\users\localadmin\documents\visual studio 2015\projects\raytracer\shape.h(120): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-c:\users\localadmin\documents\visual studio 2015\projects\raytracer\shape.h(124): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-c:\users\localadmin\documents\visual studio 2015\projects\raytracer\raytracer.h(16): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-c:\users\localadmin\documents\visual studio 2015\projects\raytracer\raytracer.h(49): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-c:\users\localadmin\documents\visual studio 2015\projects\raytracer\raytracer.h(388): warning C4018: '<': signed/unsigned mismatch
-c:\users\localadmin\documents\visual studio 2015\projects\raytracer\raytracer.h(403): warning C4018: '<': signed/unsigned mismatch
-c:\users\localadmin\documents\visual studio 2015\projects\raytracer\main.cpp(14): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-c:\users\localadmin\documents\visual studio 2015\projects\raytracer\main.cpp(20): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
-c:\users\localadmin\documents\visual studio 2015\projects\raytracer\main.cpp(26): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+c:\users\localadmin\documents\visual studio 2015\projects\raytracer\shape.h(55): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+c:\users\localadmin\documents\visual studio 2015\projects\raytracer\shape.h(120): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+c:\users\localadmin\documents\visual studio 2015\projects\raytracer\raytracer.h(16): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+c:\users\localadmin\documents\visual studio 2015\projects\raytracer\raytracer.h(387): warning C4018: '<': signed/unsigned mismatch
+c:\users\localadmin\documents\visual studio 2015\projects\raytracer\raytracer.h(402): warning C4018: '<': signed/unsigned mismatch
+c:\users\localadmin\documents\visual studio 2015\projects\raytracer\main.cpp(23): warning C4244: 'argument': conversion from 'double' to 'unsigned int', possible loss of data
+c:\users\localadmin\documents\visual studio 2015\projects\raytracer\main.cpp(29): warning C4244: 'argument': conversion from 'double' to 'unsigned int', possible loss of data
   RayTracer.vcxproj -> C:\Users\localadmin\Documents\Visual Studio 2015\Projects\RayTracer\Debug\RayTracer.exe
   RayTracer.vcxproj -> C:\Users\localadmin\Documents\Visual Studio 2015\Projects\RayTracer\Debug\RayTracer.pdb (Partial PDB)
