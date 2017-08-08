@@ -6,7 +6,7 @@ int main() {
 	int width = 672/4, height = 800/4;
 	double stereoOffset = width / 10.0;
 	double stepSize = 4.0;
-	double distance = width, lensRadius = width/16.0, aperature = 0.001, refractionIndex = 1.1;
+	double distance = width, lensRadius = width/16.0, aperature = 0.001, refractionIndex = 1.0;
 	double dStep = (width * 2 - width / 4.0) / stepSize, lrStep = (width / 4.0 - width / 16) / stepSize, riStep = 0.1, aprStep = (0.5- 0.001) / stepSize;
 	Image textures[3] = { Image("Images/blue-pentagons.jpg"), Image("Images/sphereTex/jupiter.jpg"), Image("Images/clouds.jpg") };
 	Lens lens(Sphere(Vector3(), lensRadius, WHITE, false), refractionIndex);
@@ -26,7 +26,7 @@ int main() {
 	for (double x = 0; x < num; x++) {
 		for (double y = 0; y < num; y++) {
 			for (double z = 0; z < num; z++) {
-				spheres[x * num * num + y * num + z] = Sphere(Vector3(map(x, 0, num - 1, -(width - 10), width - 10), map(y, 0, num - 1, -(height - 10), height - 10), map(z, 0, num - 1, 100, 600)), 10.0, WHITE, true, textures[(int)(x * num * num + y * num + z) % 3]);
+				spheres[x * num * num + y * num + z] = Sphere(Vector3(map(x, 0, num - 1, -(width / 2 - 6), width / 2 -6), map(y, 0, num - 1, -(height / 2 - 6), height / 2 - 6), map(z, 0, num - 1, 100, 600)), 10.0, WHITE, true, textures[(int)(x * num * num + y * num + z) % 3]);
 			}
 		}
 	}
@@ -47,7 +47,7 @@ int main() {
 					apr << aperature;
 					dis << -distance;
 					
-					std::string filename = "Lens/batch1/ri_" + ri.str() + "_spR_" + spR.str() + "_apr_" + apr.str() + "_dis_" + dis.str() + ".ppm";
+					std::string filename = "Lens/batch2/ri_" + ri.str() + "_spR_" + spR.str() + "_apr_" + apr.str() + "_dis_" + dis.str() + ".ppm";
 					
 					rt.lensTrace(-distance, 60.0 / 180 * PI, 55.0 / 180 * PI, spheres, quads, lens, light, true, 100, filename);
 
@@ -57,16 +57,19 @@ int main() {
 					dis.str(std::string());
 					distance += dStep;
 				}
-				aperature +=aprStep;
+				distance = width;
+				aperature += aprStep;
 			}
+			aperature = .001;
 			lensRadius += lrStep;
 		}
+		lensRadius = width / 16;
 		refractionIndex += riStep;
 	}
 	
 	
 	//Trace the scene.
-	//rt.lensTrace(-distance, 60.0/180*PI, 55.0/180*PI, spheres, quads, lens, light, true, 10, "Lens/lens20.ppm");
+	//rt.lensTrace(-distance, 60.0/180*PI, 55.0/180*PI, spheres, quads, lens, light, true, 100, "Lens/lens22.ppm");
 
 	return 0;
 }
