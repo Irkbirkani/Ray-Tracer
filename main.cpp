@@ -5,9 +5,9 @@
 int main() {
 	int width = 168, height = 200;
 	double stereoOffset = width / 10.0;
-	double stepSize = 4.0;
+	double stepSize = 6.0;
 	double distance = width, lensRadius = width/16.0, aperature = 0.001, refractionIndex = 1.0;
-	double dStep = (width * 2 - width / 4.0) / stepSize, lrStep = (width / 4.0 - width / 16) / stepSize, riStep = 0.1, aprStep = (0.5- 0.001) / stepSize;
+	double dStep = (width * 2 - width / 4.0) / stepSize, lrStep = (width / 2.0 - width / 16) / stepSize, riStep = 0.1, aprStep = (1.0- 0.001) / stepSize;
 	Image textures[3] = { Image("Images/blue-pentagons.jpg"), Image("Images/sphereTex/jupiter.jpg"), Image("Images/eyechart.png") };
 	Lens lens(Sphere(Vector3(), lensRadius, WHITE, false), refractionIndex);
 
@@ -43,28 +43,28 @@ int main() {
 	std::stringstream  ri(std::stringstream::in | std::stringstream::out);
 	std::stringstream spR(std::stringstream::in | std::stringstream::out);
 	std::stringstream apr(std::stringstream::in | std::stringstream::out);
-	std::stringstream dis(std::stringstream::in | std::stringstream::out);
+	//std::stringstream dis(std::stringstream::in | std::stringstream::out);
 
 	for (int i = 0; i <= 6; i++) {
 		for (int sphR = 0; sphR < stepSize; sphR++) {
 			for (int aperR = 0; aperR < stepSize; aperR++) {
-				for (int d = 0; d < stepSize; d++) {
+				//for (int d = 0; d < stepSize; d++) {
 					ri  << lens.refracIdx;
 					spR << lens.lens.radius;
 					apr << rt.cameras[0].aperature;
-					dis << -distance;
+					//dis << -distance;
 					
-					std::string filename = "Lens/batch3/ri_" + ri.str() + "_spR_" + spR.str() + "_apr_" + apr.str() + "_dis_" + dis.str() + ".ppm";
+					std::string filename = "Lens/batch4/ri_" + ri.str() + "_spR_" + spR.str() + "_apr_" + apr.str() + ".ppm";
 					
-					rt.lensTrace(-distance, 60.0 / 180 * PI, 55.0 / 180 * PI, spheres, quads, lens, light, true, 100, filename);
+					rt.lensTrace(-width, 60.0 / 180 * PI, 55.0 / 180 * PI, spheres, quads, lens, light, true, 100, filename);
 
 					ri.str(std::string());
 					spR.str(std::string());
 					apr.str(std::string());
-					dis.str(std::string());
-					distance += dStep;
-				}
-				distance = width;
+					//dis.str(std::string());
+					//distance += dStep;
+				//}
+				//distance = width;
 				rt.cameras[0].aperature += aprStep;
 			}
 			rt.cameras[0].aperature = .001;
