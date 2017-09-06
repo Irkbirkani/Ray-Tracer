@@ -272,7 +272,7 @@ public:
 	samples: The number of samples taken for DoF. Set to 1 if DoF is not enabled.
 	file:    The filepath for the file you wish to write to. Must be a .ppm.
 	*/
-	void lensTrace(double z,double vertFov, double horizFov, std::vector<Sphere> spheres, std::vector<Quad> quads, Lens lens, Vector3 light, bool DoF, int samples, std::string file)
+	void sphereLensTrace(double z,double vertFov, double horizFov, std::vector<Sphere> spheres, std::vector<Quad> quads, Lens lens, Vector3 light, bool DoF, int samples, std::string file)
 	{
 		//Open the output stream and set the paramaters for the ppm file.
 		std::ofstream out(file);
@@ -304,7 +304,7 @@ public:
 						newPos = Vector3(camera.position.x + (r*cos(t)), camera.position.y + (r*sin(t)), camera.position.z);
 					}
 					//Create the new ray
-					Ray ray = lens.refract(Ray(Vector3(newX, newY, z), newPos - Vector3(newX, newY, z)));
+					Ray ray = lens.sphereRefract(Ray(Vector3(newX, newY, z), newPos - Vector3(newX, newY, z)));
 
 					double spT, qdT;
 

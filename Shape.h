@@ -9,7 +9,7 @@ public:
 	bool texMap;
 	Sphere(Vector3 c = Vector3(), double r = 1000, Vector3 col = WHITE, bool tm = false, Image img = NULL) { center = c; radius = r; color = col; texMap = tm; image = img; }
 
-	//Returns true if a ray intersects with the sphere. The closest point of intersectoin is set as t.
+	//Returns true if a ray intersects with the sphere. The closest point of intersection is set as t.
 	bool intersect(Ray ray, double &t)
 	{
 		//Calculate the a b and c values for the quadratic equation.
@@ -35,6 +35,35 @@ public:
 		double t1 = (-b + sqrt(disc)) / (2 * a);
 
 		t = (t0 < t1 && std::min(t0,t1) > 0.001) ? t0 : t1;
+		return true;
+	}
+
+	//Returns true if a ray intersects with the sphere. The farthest point of intersection is set as t.
+	bool intersectFar(Ray ray, double &t)
+	{
+		//Calculate the a b and c values for the quadratic equation.
+		double a = ray.direction.x * ray.direction.x +
+			ray.direction.y * ray.direction.y +
+			ray.direction.z * ray.direction.z;
+		double b = (ray.direction.x * (ray.origin.x - center.x) +
+			ray.direction.y * (ray.origin.y - center.y) +
+			ray.direction.z * (ray.origin.z - center.z)) * 2;
+		double c = (ray.origin.x - center.x) * (ray.origin.x - center.x) +
+			(ray.origin.y - center.y) * (ray.origin.y - center.y) +
+			(ray.origin.z - center.z) * (ray.origin.z - center.z) -
+			(radius * radius);
+		//Calculate the discriminate of the quadratic equation.
+		double disc = (b * b) - (4 * a * c);
+
+		//If the discriminate is less than 0 then there is no intersection and the funtion terminates.
+		if (disc < 0)
+			return false;
+
+		//Calculate the two points of intersection and set t to be the smaller.
+		double t0 = (-b - sqrt(disc)) / (2 * a);
+		double t1 = (-b + sqrt(disc)) / (2 * a);
+
+		t = (t0 > t1 && std::max(t0, t1) > 0.001) ? t0 : t1;
 		return true;
 	}
 
@@ -131,18 +160,19 @@ private:
 
 class Lens {
 public:
-	Sphere lens;
+	Sphere lens[2];
 	double refracIdx;
-	Lens() { lens = Sphere(); refracIdx = 1.0; }
-	Lens(Sphere l, double refractionIndex) { lens = l; refracIdx = refractionIndex; }
+	Lens() { lens[0] = Sphere(), lens[1] = Sphere(),  refracIdx = 1.0; }
+	Lens(Sphere frontLens, Sphere backLens, double refractionIndex) { lens[0] =  frontLens, lens[1] = backLens, refracIdx = refractionIndex; }
 
-	Ray refract(Ray ray) {
+	//Refracts through a sphere. Uses lens[0] for intersections.
+	Ray sphereRefract(Ray ray) {
 
 		//Find point of intersection on lens and find the normal at that point.
 		double p;
-		lens.intersect(ray, p);
+		lens[0].intersect(ray, p);
 		Vector3 pos = ray.origin + ray.direction * p;
-		Vector3 norm = (pos - lens.center).normalize();
+		Vector3 norm = (pos - lens[0].center).normalize();
 
 		//Find the angle between the incoming ray and the normal.
 		double theta1 = (-ray.direction).getAngleBetween(norm);
@@ -155,11 +185,11 @@ public:
 		Vector3 newDir = rotAroundAxis(rotAxis, -norm, theta2);
 
 		//Find new origin of the ray coming out of the lens.
-		lens.intersect(Ray(pos, newDir), p);
+		lens[0].intersect(Ray(pos, newDir), p);
 
 		//Find the normal at the new position.
 		pos = pos + newDir * p;
-		norm = (pos - lens.center).normalize();
+		norm = (pos - lens[0].center).normalize();
 
 		//Find angle between newDir and new normal.
 		theta1 = (-newDir).getAngleBetween(-norm);
@@ -173,10 +203,89 @@ public:
 
 		 Vector3 test = ray.direction.normalize();
 
-		// if ((newDir - ray.direction.normalize()).magnitude() > 0.0001)
-		//	 printf("Bad");
+		//Return the new ray.
+		return Ray(pos, newDir);
+	}
+
+	Ray concaveRefract(Ray ray) {
+		
+		double p;
+		lens[0].intersectFar(ray, p);
+		Vector3 pos = ray.origin + ray.direction * p;
+		Vector3 norm = (pos - lens[0].center).normalize();
+
+		//Find the angle between the incoming ray and the normal.
+		double theta1 = (-ray.direction).getAngleBetween(norm);
+
+		//Find the angle between the refracted ray and the normal.
+		double theta2 = asin(1.0*sin(theta1) / refracIdx);
+
+		//Find the new direction.
+		Vector3 rotAxis = (ray.direction.cross(norm)).normalize();
+		Vector3 newDir = rotAroundAxis(rotAxis, -norm, theta2);
+
+		//Find new origin of the ray coming out of the lens.
+		lens[1].intersect(Ray(pos, newDir), p);
+
+		//Find the normal at the new position.
+		pos = pos + newDir * p;
+		norm = (pos - lens[1].center).normalize();
+
+		//Find angle between newDir and new normal.
+		theta1 = (-newDir).getAngleBetween(-norm);
+
+		//Find the angle between the refracted ray and the normal.
+		theta2 = asin(refracIdx*sin(theta1) / 1.0);
+
+		//Find the new direction.
+		rotAxis = (newDir.cross(norm)).normalize();
+		newDir = rotAroundAxis(rotAxis, norm, theta2);
+
+		Vector3 test = ray.direction.normalize();
+
+		//Return the new ray.
+		return Ray(pos, newDir);
+
+	}
+
+	Ray convexRefract(Ray ray) {
+		//Find point of intersection on lens and find the normal at that point.
+		double p;
+		lens[1].intersect(ray, p);
+		Vector3 pos = ray.origin + ray.direction * p;
+		Vector3 norm = (pos - lens[1].center).normalize();
+
+		//Find the angle between the incoming ray and the normal.
+		double theta1 = (-ray.direction).getAngleBetween(norm);
+
+		//Find the angle between the refracted ray and the normal.
+		double theta2 = asin(1.0*sin(theta1) / refracIdx);
+
+		//Find the new direction.
+		Vector3 rotAxis = (ray.direction.cross(norm)).normalize();
+		Vector3 newDir = rotAroundAxis(rotAxis, -norm, theta2);
+
+		//Find new origin of the ray coming out of the lens.
+		lens[0].intersect(Ray(pos, newDir), p);
+
+		//Find the normal at the new position.
+		pos = pos + newDir * p;
+		norm = (pos - lens[0].center).normalize();
+
+		//Find angle between newDir and new normal.
+		theta1 = (-newDir).getAngleBetween(-norm);
+
+		//Find the angle between the refracted ray and the normal.
+		theta2 = asin(refracIdx*sin(theta1) / 1.0);
+
+		//Find the new direction.
+		rotAxis = (newDir.cross(norm)).normalize();
+		newDir = rotAroundAxis(rotAxis, norm, theta2);
+
+		Vector3 test = ray.direction.normalize();
 
 		//Return the new ray.
 		return Ray(pos, newDir);
 	}
+
 };

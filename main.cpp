@@ -56,7 +56,7 @@ int main() {
 					
 					std::string filename = "Lens/batch4/ri_" + ri.str() + "_spR_" + spR.str() + "_apr_" + apr.str() + ".ppm";
 					
-					rt.lensTrace(-width, 60.0 / 180 * PI, 55.0 / 180 * PI, spheres, quads, lens, light, true, 100, filename);
+					rt.sphereLensTrace(-width, 60.0 / 180 * PI, 55.0 / 180 * PI, spheres, quads, lens, light, true, 100, filename);
 
 					ri.str(std::string());
 					spR.str(std::string());
