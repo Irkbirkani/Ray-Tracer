@@ -212,7 +212,7 @@ public:
 		double p;
 		lens[0].intersectFar(ray, p);
 		Vector3 pos = ray.origin + ray.direction * p;
-		Vector3 norm = (pos - lens[0].center).normalize();
+		Vector3 norm = (lens[0].center - pos).normalize();
 
 		//Find the angle between the incoming ray and the normal.
 		double theta1 = (-ray.direction).getAngleBetween(norm);
@@ -229,7 +229,7 @@ public:
 
 		//Find the normal at the new position.
 		pos = pos + newDir * p;
-		norm = (pos - lens[1].center).normalize();
+		norm = (lens[1].center - pos).normalize();
 
 		//Find angle between newDir and new normal.
 		theta1 = (-newDir).getAngleBetween(-norm);
