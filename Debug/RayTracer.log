@@ -1,9 +1,0 @@
-﻿  main.cpp
-c:\users\localadmin\documents\visual studio 2015\projects\raytracer\shape.h(84): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-c:\users\localadmin\documents\visual studio 2015\projects\raytracer\shape.h(149): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-c:\users\localadmin\documents\visual studio 2015\projects\raytracer\raytracer.h(16): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-c:\users\localadmin\documents\visual studio 2015\projects\raytracer\raytracer.h(627): warning C4018: '<': signed/unsigned mismatch
-c:\users\localadmin\documents\visual studio 2015\projects\raytracer\raytracer.h(642): warning C4018: '<': signed/unsigned mismatch
-c:\users\localadmin\documents\visual studio 2015\projects\raytracer\main.cpp(24): warning C4244: 'argument': conversion from 'double' to 'unsigned int', possible loss of data
-  RayTracer.vcxproj -> C:\Users\localadmin\Documents\Visual Studio 2015\Projects\RayTracer\Debug\RayTracer.exe
-  RayTracer.vcxproj -> C:\Users\localadmin\Documents\Visual Studio 2015\Projects\RayTracer\Debug\RayTracer.pdb (Partial PDB)
