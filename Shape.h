@@ -259,7 +259,7 @@ public:
         double theta1 = (-ray.direction).getAngleBetween(norm);
 
         //Find the angle between the refracted ray and the normal.
-        double theta2 = asin(deg_to_rad(1.0*sin(theta1) / refracIdx));
+        double theta2 = asin(1.0*sin(theta1) / refracIdx);
 
         //Find the new direction.
         Vector3 rotAxis = (ray.direction.cross(norm)).normalize();
@@ -276,7 +276,7 @@ public:
         theta1 = (-newDir).getAngleBetween(-norm);
 
         //Find the angle between the refracted ray and the normal.
-        theta2 = asin(deg_to_rad(refracIdx*sin(theta1) / 1.0));
+        theta2 = asin(refracIdx*sin(theta1) / 1.0);
 
         //Find the new direction.
         rotAxis = (newDir.cross(norm)).normalize();

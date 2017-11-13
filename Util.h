@@ -18,6 +18,8 @@
 #define X_AXIS  Vector3(1,   0,   0)
 #define Y_AXIS  Vector3(0,   1,   0)
 #define Z_AXIS  Vector3(0,   0,   1)
+
+
 double deg_to_rad(double deg) { return deg * M_PI / 180.0; }
 
 struct Vector3 {
@@ -43,6 +45,12 @@ struct Vector3 {
 
     //Returns the quotient of a vector and a scalar.
     Vector3 operator / (double d) const { return Vector3(x / d, y / d, z / d); }
+    
+    //Returns true if the x, y, and z coordinates are equal
+    bool operator == (const Vector3& v) const { return (x == v.x &&y == v.y && z == v.z); }
+
+    //Returns true if one of the x, y, or z coordinates does not equal the others.
+    bool operator != (const Vector3& v) const { return ( x != v.x || y != v.y || z != v.z); }
 
     //Returns the magnitude of a vector.
     double magnitude() { return sqrt(x*x + y*y + z*z); }
@@ -54,22 +62,35 @@ struct Vector3 {
     }
 
     //Returns the distance between two vectors.
-    double distance(Vector3 v) { return sqrt((x - v.x) * (x - v.x) + (y - v.y)*(y - v.y) + (z - v.z)*(z - v.z)); }
+    double distance(Vector3 v) { 
+        return sqrt((x - v.x) * (x - v.x) + (y - v.y)*(y - v.y) + (z - v.z)*(z - v.z));
+     }
     
     //Returns the cross product of two vectors.
     Vector3 cross(Vector3 v) { return Vector3(y*v.z - z*v.y, z*v.x - x*v.z, x*v.y - y*v.x); }
 
     //Rotates the Vector around the X axis by a given amount.
-    Vector3 rotAroundX(double theta) { return Vector3(x, cos(deg_to_rad(theta))*y + (-sin(deg_to_rad(theta))*z), sin(deg_to_rad(theta))*y + cos(deg_to_rad(theta))*z); }
+    Vector3 rotAroundX(double theta) {
+         return Vector3(x, cos(deg_to_rad(theta))*y + (-sin(deg_to_rad(theta))*z), 
+                        sin(deg_to_rad(theta))*y + cos(deg_to_rad(theta))*z);
+     }
 
     //Rotates the Vector around the Y axis by a given amount.
-    Vector3 rotAroundY(double theta) { return Vector3(cos(deg_to_rad(theta))*x + (-sin(deg_to_rad(theta))*z), y, sin(deg_to_rad(theta))*x + cos(deg_to_rad(theta))*z); }
+    Vector3 rotAroundY(double theta) { 
+        return Vector3(cos(deg_to_rad(theta))*x + (-sin(deg_to_rad(theta))*z),
+                       y, sin(deg_to_rad(theta))*x + cos(deg_to_rad(theta))*z); 
+        }
 
     //Rotates the Vector around the Z axis by a given amount.
-    Vector3 rotAroundZ(double theta) { return Vector3(cos(deg_to_rad(theta))*x + (-sin(deg_to_rad(theta))*y), sin(deg_to_rad(theta))*x + cos(deg_to_rad(theta))*y, z); }
+    Vector3 rotAroundZ(double theta) { 
+        return Vector3(cos(deg_to_rad(theta))*x - sin(deg_to_rad(theta))*y,
+                       sin(deg_to_rad(theta))*x + cos(deg_to_rad(theta))*y, z); 
+    }
 
     //Retuns the angle between two vectors.
-    double getAngleBetween(Vector3 v) { return acos(deg_to_rad(this->dot(v)) / (this->magnitude()*v.magnitude())); }
+    double getAngleBetween(Vector3 v) {
+         return acos(deg_to_rad(this->dot(v)) / (this->magnitude()*v.magnitude())); 
+    }
 
 };
 
@@ -95,38 +116,52 @@ double rad_to_deg(double rad) { return rad * 180.0 / M_PI; }
 //Rotates a vector around an arbitrary axis by a given amount.
 Vector3 rotAroundAxis(Vector3 axis, Vector3 vector, double theta) {
 
+    
     double radTheta = deg_to_rad(theta);
     axis = axis.normalize();
     Vector3 t = axis;
-    if (std::abs(std::abs(axis.x) - std::min(std::abs(axis.x), std::min(std::abs(axis.y), std::abs(axis.z)))) < 0.0001) {
+    if (std::abs(axis.x) == std::min(std::abs(axis.x), 
+        std::min(std::abs(axis.y), std::abs(axis.z)))) {
         t.x = 1;
+        printf("t.x set to 1\n");
     }
-    else if (std::abs(std::abs(axis.y) - std::min(std::abs(axis.x), std::min(std::abs(axis.y), std::abs(axis.z)))) < 0.0001) {
+    else if (std::abs(axis.y) == std::min(std::abs(axis.x), 
+             std::min(std::abs(axis.y), std::abs(axis.z)))) {
         t.y = 1;
+        printf("t.y set to 1\n");
     }
-    else if (std::abs(std::abs(axis.z) - std::min(std::abs(axis.x), std::min(std::abs(axis.y), std::abs(axis.z)))) < 0.0001) {
+    else if (std::abs(axis.z) == std::min(std::abs(axis.x), 
+             std::min(std::abs(axis.y), std::abs(axis.z)))) {
         t.z = 1;
+        printf("t.z set to 1\n");
     }
+    printf("t = Vector(%lf,%lf,%lf)\n", t.x, t.y, t.z);
     Vector3 u = axis.cross(t).normalize();
+    printf("u = Vector(%lf,%lf,%lf)\n", u.x, u.y, u.z);
     Vector3 v = axis.cross(u);
+    printf("v = Vector(%lf,%lf,%lf)\n\n", v.x, v.y, v.z);
 
     Vector3 res = vector;
-    res = Vector3(u.x*res.x + u.y*res.y + u.z*res.z,
-          v.x*res.x + v.y*res.y + v.z*res.z,
-          axis.x*res.x + axis.y*res.y + axis.z*res.z);
-    res = Vector3(cos(radTheta)*res.x - sin(radTheta)*res.y,
-          sin(radTheta)*res.x + cos(radTheta)*res.y, res.z);
+    printf("res = Vector(%lf,%lf,%lf)\n", res.x, res.y, res.z);
     res = Vector3(u.x*res.x + v.x*res.y + axis.x*res.z,
-          u.y*res.x + v.y*res.y + axis.y*res.z,
-          u.z*res.x + v.z*res.y + axis.z*res.z);
+                  u.y*res.x + v.y*res.y + axis.y*res.z,
+                  u.z*res.x + v.z*res.y + axis.z*res.z);
+    printf("res = Vector(%lf,%lf,%lf)\n", res.x, res.y, res.z);
+    res = res.rotAroundZ(theta);
+    printf("res = Vector(%lf,%lf,%lf)\n", res.x, res.y, res.z);
+    res = Vector3(u.x*res.x + u.y*res.y + u.z*res.z,
+                  v.x*res.x + v.y*res.y + v.z*res.z,
+                  axis.x*res.x + axis.y*res.y + axis.z*res.z);
+    printf("res = Vector(%lf,%lf,%lf)\n", res.x, res.y, res.z);
     return res;
 }
+
 //A simple Image class.
 class Image {
 public:
     unsigned char* image;
     int width, height, channels;
-    Image(char *filename = NULL)
+    Image(char * filename = NULL)
     {
         if (filename != NULL)
         {
@@ -151,4 +186,3 @@ public:
 
     Camera(Vector3 pos, Vector3 dir, Vector3 u, double a) { position = pos; direction = dir; up = u; aperature = a; }
 };
-

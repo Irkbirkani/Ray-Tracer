@@ -1,0 +1,204 @@
+/* Tester file for refraction functions */
+#include <stdlib.h>
+#include <fstream>
+#include <sstream>
+
+#include "Shape.h"
+
+using std::ofstream;
+using std::stringstream;
+
+int main(void) {
+
+    // Set up fstream
+    ofstream out("tester.txt");
+    
+    //Set up string stream.
+    stringstream x(stringstream::in | stringstream::out);
+    stringstream y(stringstream::in | stringstream::out);
+    stringstream z(stringstream::in | stringstream::out);
+
+    printf("--------- Testing .normalize() ---------\n");
+    
+    //Set up test Vectors3s.
+    Vector3 normTest1 = Vector3(2, 4, 4);
+    Vector3 normTest2 = Vector3(1, 0, 0);
+    Vector3 normTest3 = Vector3(6, 6, 3);
+
+    //What the vectors should normalize to.
+    Vector3 normTest1Ans = Vector3(1/3.0, 2/3.0, 2/3.0);
+    Vector3 normTest2Ans = Vector3(1,    0,    0);
+    Vector3 normTest3Ans = Vector3(2/3.0, 2/3.0, 1/3.0);
+
+
+    if(normTest1.normalize() != normTest1Ans){
+        printf("***FAILED***\nnormalize on Vector(%lf, %lf, %lf) failed.\n\n", normTest1.x, normTest1.y, normTest1.z);
+    } else {
+        printf("***SUCCESS***\n\n");
+        printf("normTest1    = Vector(%lf, %lf, %lf)\nnormTest1Ans = Vector(%lf, %lf, %lf)\n\n",
+                normTest1.normalize().x, normTest1.normalize().y, normTest1.normalize().z,
+                normTest1Ans.x, normTest1Ans.y, normTest1Ans.z);
+    }
+
+    if(normTest2.normalize() != normTest2Ans){
+        printf("***FAILED***\nnormalize on Vector(%lf, %lf, %lf) failed.\n\n", normTest2.x, normTest2.y, normTest2.z);
+    } else {
+        printf("***SUCCESS***\n\n");
+        printf("normTest2    = Vector(%lf, %lf, %lf)\nnormTest2Ans = Vector(%lf, %lf, %lf)\n\n",
+                normTest2.normalize().x, normTest2.normalize().y, normTest2.normalize().z,
+                normTest2Ans.x, normTest2Ans.y, normTest2Ans.z);
+    }
+
+
+    if(normTest3.normalize() != normTest3Ans){
+        printf("***FAILED***\nnormalize on Vector(%lf, %lf, %lf) failed.\n\n", normTest3.x, normTest3.y, normTest3.z);
+    } else {
+        printf("***SUCCESS***\n\n");
+        printf("normTest3    = Vector(%lf, %lf, %lf)\nnormTest3Ans = Vector(%lf, %lf, %lf)\n\n",
+                normTest3.normalize().x, normTest3.normalize().y, normTest3.normalize().z,
+                normTest3Ans.x, normTest3Ans.y, normTest3Ans.z);
+    }
+
+    printf("--------- Testing Cross Product ---------\n");
+
+    //Set up test Vector3s.
+    Vector3 xy = Vector3(1,1,0);
+    Vector3 xz = Vector3(1,0,1);
+    Vector3 yz = Vector3(0,1,1);
+
+    //Set up result Vector3s.
+    Vector3 xyCrossxz = xy.cross(xz);
+    Vector3 xzCrossyz = xz.cross(yz);
+    Vector3 yzCrossxy = yz.cross(xy);
+
+    //Set up answer Vector3s.
+    Vector3 xyCrossxzAns = Vector3( 1,-1,-1);
+    Vector3 yzCrossxyAns = Vector3(-1, 1,-1);
+    Vector3 xzCrossyzAns = Vector3(-1,-1, 1);
+
+    if(xyCrossxz != xyCrossxzAns){
+        printf("***FAILED***\n");
+        printf("Cross product failed over Vector(%lf, %lf, %lf) x Vector(%lf, %lf, %lf)\n\n",
+                xy.x, xy.y, xy.z, xz.x, xz.y, xz.x);
+    } else {
+        printf("***SUCCESS***\n\n");
+        printf("xy.cross(xz) = Vector(%lf,%lf,%lf)\n\n", xyCrossxz.x, xyCrossxz.y, xyCrossxz.z);
+        out << "Cross Product of Vector(" << xy.x << ", " << xy.y << ", " << xy.z << ") and Vector("
+            << xz.x << ", " << xz.y << ", " << xz.z << ") = Vector(" << xyCrossxz.x << ", " 
+            << xyCrossxz.y << ", "  << xyCrossxz.z << ")\n\n";
+    }
+
+
+    if(yzCrossxy != yzCrossxyAns){
+        printf("***FAILED***\n");
+        printf("Cross product failed over Vector(%lf, %lf, %lf) x Vector(%lf, %lf, %lf)\n\n",
+                yz.x, yz.y, yz.z, xy.x, xy.y, xy.x);
+    } else {
+        printf("***SUCCESS***\n\n");
+        printf("yz.cross(xy) = Vector(%lf,%lf,%lf)\n\n", yzCrossxy.x, yzCrossxy.y, yzCrossxy.z);
+        out << "Cross Product of Vector(" << yz.x << ", " << yz.y << ", " << yz.z << ") and Vector("
+            << xy.x << ", " << xy.y << ", " << xy.z << ") = Vector(" << yzCrossxy.x << ", " 
+            << yzCrossxy.y << ", "  << yzCrossxy.z << ")\n\n";
+    }
+
+    if(xzCrossyz != xzCrossyzAns){
+        printf("***FAILED***\n");
+        printf("Cross product failed over Vector(%lf, %lf, %lf) x Vector(%lf, %lf, %lf)\n\n",
+                xz.x, xz.y, xz.z, yz.x, yz.y, yz.x);
+    } else {
+        printf("***SUCCESS***\n\n");
+        printf("xz.cross(yz) = Vector(%lf,%lf,%lf)\n\n", xzCrossyz.x, xzCrossyz.y, xzCrossyz.z);
+        out << "Cross Product of Vector(" << xz.x << ", " << xz.y << ", " << xz.z << ") and Vector("
+            << yz.x << ", " << yz.y << ", " << yz.z << ") = Vector(" << xzCrossyz.x << ", " 
+            << xzCrossyz.y << ", "  << xzCrossyz.z << ")\n\n";
+    }
+
+    printf("--------- Testing rotAroundAxis() ---------\n");
+    
+
+
+    //What the vectors should rotate to.
+    Vector3 xyRotated = Vector3(-1,  1,  0);
+    Vector3 yzRotated = Vector3( 0, -1,  1);
+    Vector3 xzRotated = Vector3( 1,  0, -1);
+
+    //Rotation angle.
+    double theta = 0;
+
+    //Test rotAroundAxis where axis = X_AXIS, vector = yz, theta = 90.
+    out << "Testing rotAroundAxis(X_AXIS, Vector3(0, 1, 1), 90);\n";
+    
+    Vector3 yzResult = rotAroundAxis(X_AXIS, yz, theta);
+
+    x << yzResult.x;
+    y << yzResult.y;
+    z << yzResult.z;
+
+    out << "rotAroundAxis(X_AXIS, Vector3(0, 1, 1), 90) = Vector3(" 
+        << x.str() << ", "
+        << y.str() << ", "
+        << z.str() << ")\n\n";
+
+    if(yzResult != yzRotated){
+        printf("***FAILED***\n rotAroundAxis failed with inputs: X_AXIS, Vector3(0, 1, 1), 90\n");
+        printf("Should have been Vector(%lf, %lf, %lf)\n\n", yzRotated.x, yzRotated.y, yzRotated.z);
+    } else {
+        printf("***SUCCESS***\n");
+    }
+
+    x.str("");
+    y.str("");
+    z.str("");
+    
+    //Test rotAroundAxis where axis = Y_AXIS, vector = xz, theta = 90.
+    out << "Testing rotAroundAxis(Y_AXIS, Vector3(1 ,0, 1), 90);\n";
+    
+    Vector3 xzResult = rotAroundAxis(Y_AXIS, xz, theta);
+    
+    x << xzResult.x;
+    y << xzResult.y;
+    z << xzResult.z;
+    
+    out << "rotAroundAxis(Y_AXIS, Vector3(1, 0, 1), 90) = Vector3(" 
+        << x.str() << ", "
+        << y.str() << ", "
+        << z.str() << ")\n\n";
+    
+    if(xzResult != xzRotated){
+        printf("***FAILED***\n rotAroundAxis failed with inputs: Y_AXIS, Vector3(1, 0, 1), 90)\n");
+        printf("Should have been Vector(%lf, %lf, %lf)\n\n", xzRotated.x, xzRotated.y, xzRotated.z);
+    } else {
+        printf("***SUCCESS***\n");
+    }
+    
+    x.str("");
+    y.str("");
+    z.str("");
+
+
+    //Test rotAroundAxis where axis = Z_AXIS, vector = xy, theta = 90.
+    out << "Testing rotAroundAxis(Z_AXIS, Vector3(1 ,1, 0), 90);\n";
+    
+    Vector3 xyResult = rotAroundAxis(Z_AXIS, xy, theta);
+    
+    x << xyResult.x;
+    y << xyResult.y;
+    z << xyResult.z;
+    
+    out << "rotAroundAxis(Z_AXIS, Vector3(1, 1, 0), 90) = Vector3(" 
+        << x.str() << ", "
+        << y.str() << ", "
+        << z.str() << ")\n\n";
+
+    if(xyResult != xyRotated){
+        printf("***FAILED***\n rotAroundAxis failed with inputs: Z_AXIS, Vector3(1, 1, 0), 90\n");
+        printf("Should have been Vector(%lf, %lf, %lf)\n\n", xyRotated.x, xyRotated.y, xyRotated.z);
+    } else {
+        printf("***SUCCESS***\n");
+    }
+
+    x.str("");
+    y.str("");
+    z.str("");
+
+} 
