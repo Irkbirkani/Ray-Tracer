@@ -45,15 +45,15 @@ struct Vector3 {
 
     //Returns the quotient of a vector and a scalar.
     Vector3 operator / (double d) const { return Vector3(x / d, y / d, z / d); }
-    
+
     //Returns true if the x, y, and z coordinates are equal
-    bool operator == (const Vector3& v) const { 
-        return (x - v.x < 0.000001 && y - v.y < 0.000001 && z - v.z < 0.000001); 
+    bool operator == (const Vector3& v) const {
+        return (x - v.x < 0.000001 && y - v.y < 0.000001 && z - v.z < 0.000001);
     }
 
     //Returns true if one of the x, y, or z coordinates does not equal the others.
-    bool operator != (const Vector3& v) const { 
-        return ( x - v.x >= 0.000001 || y - v.y >= 0.000001 || z - v.z >= 0.000001); 
+    bool operator != (const Vector3& v) const {
+        return ( x - v.x >= 0.000001 || y - v.y >= 0.000001 || z - v.z >= 0.000001);
     }
 
     //Returns the magnitude of a vector.
@@ -66,34 +66,34 @@ struct Vector3 {
     }
 
     //Returns the distance between two vectors.
-    double distance(Vector3 v) { 
+    double distance(Vector3 v) {
         return sqrt((x - v.x) * (x - v.x) + (y - v.y)*(y - v.y) + (z - v.z)*(z - v.z));
      }
-    
+
     //Returns the cross product of two vectors.
     Vector3 cross(Vector3 v) { return Vector3(y*v.z - z*v.y, z*v.x - x*v.z, x*v.y - y*v.x); }
 
     //Rotates the Vector around the X axis by a given amount.
     Vector3 rotAroundX(double theta) {
-         return Vector3(x, cos(deg_to_rad(theta))*y + (-sin(deg_to_rad(theta))*z), 
+         return Vector3(x, cos(deg_to_rad(theta))*y + (-sin(deg_to_rad(theta))*z),
                         sin(deg_to_rad(theta))*y + cos(deg_to_rad(theta))*z);
      }
 
     //Rotates the Vector around the Y axis by a given amount.
-    Vector3 rotAroundY(double theta) { 
+    Vector3 rotAroundY(double theta) {
         return Vector3(cos(deg_to_rad(theta))*x + (-sin(deg_to_rad(theta))*z),
-                       y, sin(deg_to_rad(theta))*x + cos(deg_to_rad(theta))*z); 
+                       y, sin(deg_to_rad(theta))*x + cos(deg_to_rad(theta))*z);
         }
 
     //Rotates the Vector around the Z axis by a given amount.
-    Vector3 rotAroundZ(double theta) { 
+    Vector3 rotAroundZ(double theta) {
         return Vector3(cos(deg_to_rad(theta))*x - sin(deg_to_rad(theta))*y,
-                      sin(deg_to_rad(theta))*x + cos(deg_to_rad(theta))*y, z); 
+                      sin(deg_to_rad(theta))*x + cos(deg_to_rad(theta))*y, z);
     }
 
     //Retuns the angle between two vectors.
     double getAngleBetween(Vector3 v) {
-         return acos(deg_to_rad(this->dot(v)) / (this->magnitude()*v.magnitude())); 
+         return acos(deg_to_rad(this->dot(v)) / (this->magnitude()*v.magnitude()));
     }
 
     //Prints the Vector.
@@ -128,17 +128,17 @@ Vector3 rotAroundAxis(Vector3 axis, Vector3 vector, double theta) {
 
     axis = axis.normalize();
     Vector3 t = axis;
-    if (std::abs(axis.x) - std::min(std::abs(axis.x), 
+    if (std::abs(axis.x) - std::min(std::abs(axis.x),
         std::min(std::abs(axis.y), std::abs(axis.z))) < 0.000001) {
         t.x = 1;
         printf("t.x = 1\n");
     }
-    else if (std::abs(axis.y) - std::min(std::abs(axis.x), 
+    else if (std::abs(axis.y) - std::min(std::abs(axis.x),
              std::min(std::abs(axis.y), std::abs(axis.z))) < 0.000001) {
         t.y = 1;
         printf("t.y = 1\n");
     }
-    else if (std::abs(axis.z) - std::min(std::abs(axis.x), 
+    else if (std::abs(axis.z) - std::min(std::abs(axis.x),
              std::min(std::abs(axis.y), std::abs(axis.z))) < 0.000001) {
         t.z = 1;
         printf("t.z = 1\n");
@@ -153,17 +153,17 @@ Vector3 rotAroundAxis(Vector3 axis, Vector3 vector, double theta) {
     v.println();
 
     Vector3 res = vector;
-    res.println(); 
-    res = Vector3(u.x*res.x + v.x*res.y + axis.x*res.z,
-                  u.y*res.x + v.y*res.y + axis.y*res.z,
-                  u.z*res.x + v.z*res.y + axis.z*res.z);
-    res.println(); 
-    res = res.rotAroundZ(theta);
-    res.println(); 
+    res.println();
     res = Vector3(u.x*res.x + u.y*res.y + u.z*res.z,
                   v.x*res.x + v.y*res.y + v.z*res.z,
                   axis.x*res.x + axis.y*res.y + axis.z*res.z);
-    res.println(); 
+    res.println();
+    res = res.rotAroundZ(theta);
+    res.println();
+    res = Vector3(u.x*res.x + v.x*res.y + axis.x*res.z,
+                  u.y*res.x + v.y*res.y + axis.y*res.z,
+                  u.z*res.x + v.z*res.y + axis.z*res.z);
+    res.println();
     return res;
 }
 
