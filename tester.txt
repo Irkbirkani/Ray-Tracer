@@ -5,11 +5,11 @@ Cross Product of Vector(0, 1, 1) and Vector(1, 1, 0) = Vector(-1, 1, -1)
 Cross Product of Vector(1, 0, 1) and Vector(0, 1, 1) = Vector(-1, -1, 1)
 
 Testing rotAroundAxis(X_AXIS, Vector3(0, 1, 1), 90);
-rotAroundAxis(X_AXIS, Vector3(0, 1, 1), 90) = Vector3(0, 1, 1)
+rotAroundAxis(X_AXIS, Vector3(0, 1, 1), 90) = Vector3(0, -1, 1)
 
 Testing rotAroundAxis(Y_AXIS, Vector3(1 ,0, 1), 90);
-rotAroundAxis(Y_AXIS, Vector3(1, 0, 1), 90) = Vector3(1, 0, 1)
+rotAroundAxis(Y_AXIS, Vector3(1, 0, 1), 90) = Vector3(1, 1, 6.12323e-17)
 
 Testing rotAroundAxis(Z_AXIS, Vector3(1 ,1, 0), 90);
-rotAroundAxis(Z_AXIS, Vector3(1, 1, 0), 90) = Vector3(1, 1, 0)
+rotAroundAxis(Z_AXIS, Vector3(1, 1, 0), 90) = Vector3(-1, 1, 0)
 

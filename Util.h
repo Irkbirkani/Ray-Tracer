@@ -47,10 +47,14 @@ struct Vector3 {
     Vector3 operator / (double d) const { return Vector3(x / d, y / d, z / d); }
     
     //Returns true if the x, y, and z coordinates are equal
-    bool operator == (const Vector3& v) const { return (x == v.x &&y == v.y && z == v.z); }
+    bool operator == (const Vector3& v) const { 
+        return (x - v.x < 0.000001 && y - v.y < 0.000001 && z - v.z < 0.000001); 
+    }
 
     //Returns true if one of the x, y, or z coordinates does not equal the others.
-    bool operator != (const Vector3& v) const { return ( x != v.x || y != v.y || z != v.z); }
+    bool operator != (const Vector3& v) const { 
+        return ( x - v.x >= 0.000001 || y - v.y >= 0.000001 || z - v.z >= 0.000001); 
+    }
 
     //Returns the magnitude of a vector.
     double magnitude() { return sqrt(x*x + y*y + z*z); }
@@ -84,13 +88,19 @@ struct Vector3 {
     //Rotates the Vector around the Z axis by a given amount.
     Vector3 rotAroundZ(double theta) { 
         return Vector3(cos(deg_to_rad(theta))*x - sin(deg_to_rad(theta))*y,
-                       sin(deg_to_rad(theta))*x + cos(deg_to_rad(theta))*y, z); 
+                      sin(deg_to_rad(theta))*x + cos(deg_to_rad(theta))*y, z); 
     }
 
     //Retuns the angle between two vectors.
     double getAngleBetween(Vector3 v) {
          return acos(deg_to_rad(this->dot(v)) / (this->magnitude()*v.magnitude())); 
     }
+
+    //Prints the Vector.
+    void print() { printf("Vector(%lf, %lf, %lf)", x, y, z); }
+
+    //Prints the Vector with a new line.
+    void println() { printf("Vector(%lf, %lf, %lf)\n", x, y, z); }
 
 };
 
@@ -116,43 +126,44 @@ double rad_to_deg(double rad) { return rad * 180.0 / M_PI; }
 //Rotates a vector around an arbitrary axis by a given amount.
 Vector3 rotAroundAxis(Vector3 axis, Vector3 vector, double theta) {
 
-    
-    double radTheta = deg_to_rad(theta);
     axis = axis.normalize();
     Vector3 t = axis;
-    if (std::abs(axis.x) == std::min(std::abs(axis.x), 
-        std::min(std::abs(axis.y), std::abs(axis.z)))) {
+    if (std::abs(axis.x) - std::min(std::abs(axis.x), 
+        std::min(std::abs(axis.y), std::abs(axis.z))) < 0.000001) {
         t.x = 1;
-        printf("t.x set to 1\n");
+        printf("t.x = 1\n");
     }
-    else if (std::abs(axis.y) == std::min(std::abs(axis.x), 
-             std::min(std::abs(axis.y), std::abs(axis.z)))) {
+    else if (std::abs(axis.y) - std::min(std::abs(axis.x), 
+             std::min(std::abs(axis.y), std::abs(axis.z))) < 0.000001) {
         t.y = 1;
-        printf("t.y set to 1\n");
+        printf("t.y = 1\n");
     }
-    else if (std::abs(axis.z) == std::min(std::abs(axis.x), 
-             std::min(std::abs(axis.y), std::abs(axis.z)))) {
+    else if (std::abs(axis.z) - std::min(std::abs(axis.x), 
+             std::min(std::abs(axis.y), std::abs(axis.z))) < 0.000001) {
         t.z = 1;
-        printf("t.z set to 1\n");
+        printf("t.z = 1\n");
     }
-    printf("t = Vector(%lf,%lf,%lf)\n", t.x, t.y, t.z);
+    printf("t = ");
+    t.println();
     Vector3 u = axis.cross(t).normalize();
-    printf("u = Vector(%lf,%lf,%lf)\n", u.x, u.y, u.z);
+    printf("u = ");
+    u.println();
     Vector3 v = axis.cross(u);
-    printf("v = Vector(%lf,%lf,%lf)\n\n", v.x, v.y, v.z);
+    printf("v = ");
+    v.println();
 
     Vector3 res = vector;
-    printf("res = Vector(%lf,%lf,%lf)\n", res.x, res.y, res.z);
+    res.println(); 
     res = Vector3(u.x*res.x + v.x*res.y + axis.x*res.z,
                   u.y*res.x + v.y*res.y + axis.y*res.z,
                   u.z*res.x + v.z*res.y + axis.z*res.z);
-    printf("res = Vector(%lf,%lf,%lf)\n", res.x, res.y, res.z);
+    res.println(); 
     res = res.rotAroundZ(theta);
-    printf("res = Vector(%lf,%lf,%lf)\n", res.x, res.y, res.z);
+    res.println(); 
     res = Vector3(u.x*res.x + u.y*res.y + u.z*res.z,
                   v.x*res.x + v.y*res.y + v.z*res.z,
                   axis.x*res.x + axis.y*res.y + axis.z*res.z);
-    printf("res = Vector(%lf,%lf,%lf)\n", res.x, res.y, res.z);
+    res.println(); 
     return res;
 }
 
