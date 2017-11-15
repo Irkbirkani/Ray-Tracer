@@ -124,6 +124,7 @@ int main(void) {
     double theta = 90;
 
     //Test rotAroundAxis where axis = X_AXIS, vector = yz, theta = 90.
+    printf("Test rotAroundAxis where axis = X_AXIS, vector = yz, theta = 90\n");
     out << "Testing rotAroundAxis(X_AXIS, Vector3(0, 1, 1), 90);\n";
     
     Vector3 yzResult = rotAroundAxis(X_AXIS, yz, theta);
@@ -152,6 +153,7 @@ int main(void) {
     z.str("");
     
     //Test rotAroundAxis where axis = Y_AXIS, vector = xz, theta = 90.
+    printf("Test rotAroundAxis where axis = Y_AXIS, vector = xz, theta = 90\n");
     out << "Testing rotAroundAxis(Y_AXIS, Vector3(1 ,0, 1), 90);\n";
     
     Vector3 xzResult = rotAroundAxis(Y_AXIS, xz, theta);
@@ -171,7 +173,8 @@ int main(void) {
         printf("***FAILED***\n rotAroundAxis failed with inputs: Y_AXIS, Vector3(1, 0, 1), 90)\n");
         printf("Is ");
         xzResult.print();
-        printf("\nShould have been Vector(%lf, %lf, %lf)\n\n", xzRotated.x, xzRotated.y, xzRotated.z);
+        printf("\nShould have been Vector(%lf, %lf, %lf)\n\n",
+                 xzRotated.x, xzRotated.y, xzRotated.z);
     }
     
     x.str("");
@@ -180,30 +183,64 @@ int main(void) {
 
 
     //Test rotAroundAxis where axis = Z_AXIS, vector = xy, theta = 90.
+    printf("Test rotAroundAxis where axis = xy, vector = Z_AXIS, theta = 90\n");
     out << "Testing rotAroundAxis(Z_AXIS, Vector3(1 ,1, 0), 90);\n";
     
-    Vector3 xyResult = rotAroundAxis(Z_AXIS, xy, theta);
+    Vector3 zResult = rotAroundAxis(xy, Z_AXIS, theta);
     
-    x << xyResult.x;
-    y << xyResult.y;
-    z << xyResult.z;
+    x << zResult.x;
+    y << zResult.y;
+    z << zResult.z;
     
     out << "rotAroundAxis(Z_AXIS, Vector3(1, 1, 0), 90) = Vector3(" 
         << x.str() << ", "
         << y.str() << ", "
         << z.str() << ")\n\n";
 
-    if(xyResult == xyRotated){
+    Vector3 zRotated = Vector3(0.707107, -0.707107, 0);
+
+    if(zResult == zRotated){
         printf("***SUCCESS***\n");
     } else {
-        printf("***FAILED***\n rotAroundAxis failed with inputs: Z_AXIS, Vector3(1, 1, 0), 90\n");
+        printf("***FAILED***\n rotAroundAxis failed with inputs: Vector3(1, 1, 0), Z_AXIS, 90\n");
         printf("Is ");
-        xyResult.print();
-        printf("\nShould have been Vector(%lf, %lf, %lf)\n\n", xyRotated.x, xyRotated.y, xyRotated.z);
+        zResult.print();
+        printf("\nShould have been Vector(%lf, %lf, %lf)\n\n",
+                 zRotated.x, zRotated.y, zRotated.z);
     }
 
     x.str("");
     y.str("");
     z.str("");
 
+    printf("--------- Testing convexRefract() ---------\n");
+    
+    //Set up Lens.
+    Lens testLens(Sphere(Vector3(), 10.0, WHITE, false),
+                  Sphere(Vector3(), 10.0, WHITE, false),
+                  1.0);
+    printf("Lens testLens with the first sphere at ");
+    testLens.lens[0].center.print();
+    printf(" and radius %lf.\nThe second sphere is at ", testLens.lens[0].radius);
+    testLens.lens[1].center.print();
+    printf(" and radius %lf.\nThe index of refraction is %lf\n\n", testLens.lens[1].radius, testLens.refracIdx);
+
+    Ray ray(Vector3(0,0,-100), Vector3(0,0,1));
+    
+    printf("Testing convexRefract on ray with origin: ");
+    ray.origin.print();
+    printf(" and direction: ");
+    ray.direction.print();
+    printf("\n\n");
+    Ray retRay = testLens.convexRefract(ray);
+
+    if(ray.direction == retRay.direction) {
+        printf("***SUCCESS***\n");
+    } else {
+        printf("***FAILED***\n");
+        printf("new ray direction: ");
+        retRay.direction.println();
+        printf("Should have been: ");
+        ray.direction.println();
+    }
 } 

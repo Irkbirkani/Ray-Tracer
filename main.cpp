@@ -37,11 +37,11 @@ int main() {
     }
 */
     spheres.resize(5);
-    spheres[0] = Sphere(Vector3(-200, -200, 300), 125.0, WHITE, false, textures[0]);
-    spheres[1] = Sphere(Vector3(-67,  -67,  400), 125.0, WHITE, false, textures[1]);
-    spheres[2] = Sphere(Vector3( 67,   67,  500), 125.0, WHITE, false, textures[2]);
-    spheres[3] = Sphere(Vector3( 200,  200, 600), 125.0, WHITE, false, textures[0]);
-    spheres[4] = Sphere(Vector3( 333,  333, 700), 125.0, WHITE, false, textures[1]);
+    spheres[0] = Sphere(Vector3(-200, -200, 300), 125.0, WHITE, true, textures[0]);
+    spheres[1] = Sphere(Vector3(-67,  -67,  400), 125.0, WHITE, true, textures[1]);
+    spheres[2] = Sphere(Vector3( 67,   67,  500), 125.0, WHITE, true, textures[2]);
+    spheres[3] = Sphere(Vector3( 200,  200, 600), 125.0, WHITE, true, textures[0]);
+    spheres[4] = Sphere(Vector3( 333,  333, 700), 125.0, WHITE, true, textures[1]);
 
     Vector3 light = Vector3(0, 0, -100);
 

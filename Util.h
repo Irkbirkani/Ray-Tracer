@@ -131,39 +131,26 @@ Vector3 rotAroundAxis(Vector3 axis, Vector3 vector, double theta) {
     if (std::abs(axis.x) - std::min(std::abs(axis.x),
         std::min(std::abs(axis.y), std::abs(axis.z))) < 0.000001) {
         t.x = 1;
-        printf("t.x = 1\n");
     }
     else if (std::abs(axis.y) - std::min(std::abs(axis.x),
              std::min(std::abs(axis.y), std::abs(axis.z))) < 0.000001) {
         t.y = 1;
-        printf("t.y = 1\n");
     }
     else if (std::abs(axis.z) - std::min(std::abs(axis.x),
              std::min(std::abs(axis.y), std::abs(axis.z))) < 0.000001) {
         t.z = 1;
-        printf("t.z = 1\n");
     }
-    printf("t = ");
-    t.println();
     Vector3 u = axis.cross(t).normalize();
-    printf("u = ");
-    u.println();
     Vector3 v = axis.cross(u);
-    printf("v = ");
-    v.println();
 
     Vector3 res = vector;
-    res.println();
     res = Vector3(u.x*res.x + u.y*res.y + u.z*res.z,
                   v.x*res.x + v.y*res.y + v.z*res.z,
                   axis.x*res.x + axis.y*res.y + axis.z*res.z);
-    res.println();
     res = res.rotAroundZ(theta);
-    res.println();
     res = Vector3(u.x*res.x + v.x*res.y + axis.x*res.z,
                   u.y*res.x + v.y*res.y + axis.y*res.z,
                   u.z*res.x + v.z*res.y + axis.z*res.z);
-    res.println();
     return res;
 }
 
