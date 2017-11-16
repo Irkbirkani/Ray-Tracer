@@ -208,7 +208,7 @@ public:
     }
 
     Ray concaveRefract(Ray ray) {
-        
+
         double p;
         lens[0].intersectFar(ray, p);
         Vector3 pos = ray.origin + ray.direction * p;
@@ -267,14 +267,20 @@ public:
         double theta2 = asin(1.0*sin(theta1) / refracIdx);
         printf("theta2 = %lf (in rad. is the angle from snell's law)\n", theta2);
 
-        (ray.direction.cross(norm)).println();
-        //Find the new direction.
-        Vector3 rotAxis = (ray.direction.cross(norm)).normalize();
-        printf("rotation axis to find newDir ");
-        rotAxis.println();
-        Vector3 newDir = rotAroundAxis(rotAxis, -norm, theta2);
-        printf("newDir = ");
-        newDir.println();
+        Vector3 newDir;
+
+        if(std::abs(theta1) < 0.0001) {
+          newDir = ray.direction;
+        } else {
+          (ray.direction.cross(norm)).println();
+          //Find the new direction.
+          Vector3 rotAxis = (ray.direction.cross(norm)).normalize();
+          printf("rotation axis to find newDir ");
+          rotAxis.println();
+          newDir = rotAroundAxis(rotAxis, -norm, -theta2);
+          printf("newDir = ");
+          newDir.println();
+        }
 
         //Find new origin of the ray coming out of the lens.
         lens[0].intersect(Ray(pos, newDir), p);
@@ -293,19 +299,23 @@ public:
         theta2 = asin(refracIdx*sin(theta1) / 1.0);
         printf("new theta2 = %lf (in rad. is the angle from snell's law)\n", theta2);
 
-        //Find the new direction.
-        rotAxis = (newDir.cross(norm)).normalize();
-        printf("rotation axis to find newDir ");
-        rotAxis.println();
-        newDir = rotAroundAxis(rotAxis, norm, theta2);
-        printf("newDir = ");
-        newDir.println();
+        if(std::abs(theta1) < 0.0001) {
+          //leave newDir alone
+        } else {
+          //Find the new direction.
+          Vector3 rotAxis = (newDir.cross(norm)).normalize();
+          printf("rotation axis to find newDir ");
+          rotAxis.println();
+          newDir = rotAroundAxis(rotAxis, norm, theta2);
+          printf("newDir = ");
+          newDir.println();
 
-        printf("New ray with origin: ");
-        pos.print();
-        printf(" and direction: ");
-        newDir.print();
-        printf("\n\n");
+          printf("New ray with origin: ");
+          pos.print();
+          printf(" and direction: ");
+          newDir.print();
+          printf("\n\n");
+        }
 
         //Return the new ray.
         return Ray(pos, newDir);

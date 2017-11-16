@@ -93,7 +93,16 @@ struct Vector3 {
 
     //Retuns the angle between two vectors.
     double getAngleBetween(Vector3 v) {
-         return acos(deg_to_rad(this->dot(v)) / (this->magnitude()*v.magnitude()));
+         //return acos(deg_to_rad(this->dot(v)) / (this->magnitude()*v.magnitude()));
+         printf("this = "); this->println();
+         printf("v    = "); v.println();
+         printf("this -> dot(v) = %f\n", this->dot(v));
+         printf("this -> magnitude() = %f\n", this->magnitude());
+         printf("v.magnitude() = %f\n", v.magnitude());
+         double frac = this->dot(v) / (this->magnitude()*v.magnitude());
+         if(frac > 1.0) return 0;
+         else if(frac < -1.0) return PI;
+         else return acos(frac);
     }
 
     //Prints the Vector.
