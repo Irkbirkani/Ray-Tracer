@@ -1,22 +1,9 @@
 /* Tester file for refraction functions */
 #include <stdlib.h>
-#include <fstream>
-#include <sstream>
 
 #include "Shape.h"
 
-using std::ofstream;
-using std::stringstream;
-
 int main(void) {
-
-    // Set up fstream
-    ofstream out("tester.txt");
-
-    //Set up string stream.
-    stringstream x(stringstream::in | stringstream::out);
-    stringstream y(stringstream::in | stringstream::out);
-    stringstream z(stringstream::in | stringstream::out);
 
     printf("--------- Testing .normalize() ---------\n");
 
@@ -37,7 +24,8 @@ int main(void) {
                 normTest1.x, normTest1.y, normTest1.z,
                 normTest1Ans.x, normTest1Ans.y, normTest1Ans.z);
     } else {
-        printf("***FAILED***\nnormalize on Vector(%lf, %lf, %lf) failed.\n\n", normTest1.x, normTest1.y, normTest1.z);
+        printf("***FAILED***\nnormalize on Vector(%lf, %lf, %lf) failed.\n\n",
+		       	normTest1.x, normTest1.y, normTest1.z);
     }
 
     if(normTest2.normalize() == normTest2Ans){
@@ -46,7 +34,8 @@ int main(void) {
                 normTest2.x, normTest2.y, normTest2.z,
                 normTest2Ans.x, normTest2Ans.y, normTest2Ans.z);
     } else {
-        printf("***FAILED***\nnormalize on Vector(%lf, %lf, %lf) failed.\n\n", normTest2.x, normTest2.y, normTest2.z);
+        printf("***FAILED***\nnormalize on Vector(%lf, %lf, %lf) failed.\n\n",
+		       	normTest2.x, normTest2.y, normTest2.z);
     }
 
 
@@ -56,7 +45,8 @@ int main(void) {
                 normTest3.x, normTest3.y, normTest3.z,
                 normTest3Ans.x, normTest3Ans.y, normTest3Ans.z);
     } else {
-        printf("***FAILED***\nnormalize on Vector(%lf, %lf, %lf) failed.\n\n", normTest3.x, normTest3.y, normTest3.z);
+        printf("***FAILED***\nnormalize on Vector(%lf, %lf, %lf) failed.\n\n",
+		       	normTest3.x, normTest3.y, normTest3.z);
     }
 
     printf("--------- Testing Cross Product ---------\n");
@@ -79,9 +69,6 @@ int main(void) {
     if(xyCrossxz == xyCrossxzAns){
         printf("***SUCCESS***\n");
         printf("xy.cross(xz) = Vector(%lf,%lf,%lf)\n\n", xyCrossxz.x, xyCrossxz.y, xyCrossxz.z);
-        out << "Cross Product of Vector(" << xy.x << ", " << xy.y << ", " << xy.z << ") and Vector("
-            << xz.x << ", " << xz.y << ", " << xz.z << ") = Vector(" << xyCrossxz.x << ", "
-            << xyCrossxz.y << ", "  << xyCrossxz.z << ")\n\n";
     } else {
         printf("***FAILED***\n");
         printf("Cross product failed over Vector(%lf, %lf, %lf) x Vector(%lf, %lf, %lf)\n\n",
@@ -92,9 +79,6 @@ int main(void) {
     if(yzCrossxy == yzCrossxyAns){
         printf("***SUCCESS***\n");
         printf("yz.cross(xy) = Vector(%lf,%lf,%lf)\n\n", yzCrossxy.x, yzCrossxy.y, yzCrossxy.z);
-        out << "Cross Product of Vector(" << yz.x << ", " << yz.y << ", " << yz.z << ") and Vector("
-            << xy.x << ", " << xy.y << ", " << xy.z << ") = Vector(" << yzCrossxy.x << ", "
-            << yzCrossxy.y << ", "  << yzCrossxy.z << ")\n\n";
     } else {
         printf("***FAILED***\n");
         printf("Cross product failed over Vector(%lf, %lf, %lf) x Vector(%lf, %lf, %lf)\n\n",
@@ -104,9 +88,6 @@ int main(void) {
     if(xzCrossyz == xzCrossyzAns){
         printf("***SUCCESS***\n");
         printf("xz.cross(yz) = Vector(%lf,%lf,%lf)\n\n", xzCrossyz.x, xzCrossyz.y, xzCrossyz.z);
-        out << "Cross Product of Vector(" << xz.x << ", " << xz.y << ", " << xz.z << ") and Vector("
-            << yz.x << ", " << yz.y << ", " << yz.z << ") = Vector(" << xzCrossyz.x << ", "
-            << xzCrossyz.y << ", "  << xzCrossyz.z << ")\n\n";
     } else {
         printf("***FAILED***\n");
         printf("Cross product failed over Vector(%lf, %lf, %lf) x Vector(%lf, %lf, %lf)\n\n",
@@ -125,19 +106,8 @@ int main(void) {
 
     //Test rotAroundAxis where axis = X_AXIS, vector = yz, theta = 90.
     printf("Test rotAroundAxis where axis = X_AXIS, vector = yz, theta = 90\n");
-    out << "Testing rotAroundAxis(X_AXIS, Vector3(0, 1, 1), 90);\n";
 
     Vector3 yzResult = rotAroundAxis(X_AXIS, yz, theta);
-
-    x << yzResult.x;
-    y << yzResult.y;
-    z << yzResult.z;
-
-    out << "rotAroundAxis(X_AXIS, Vector3(0, 1, 1), 90) = Vector3("
-        << x.str() << ", "
-        << y.str() << ", "
-        << z.str() << ")\n\n";
-
 
     if(yzResult == yzRotated){
         printf("***SUCCESS***\n");
@@ -145,27 +115,14 @@ int main(void) {
         printf("***FAILED***\n rotAroundAxis failed with inputs: X_AXIS, Vector3(0, 1, 1), 90\n");
         printf("Is ");
         yzResult.print();
-        printf("\nShould have been Vector(%lf, %lf, %lf)\n\n", yzRotated.x, yzRotated.y, yzRotated.z);
+        printf("\nShould have been Vector(%lf, %lf, %lf)\n\n",
+		       	yzRotated.x, yzRotated.y, yzRotated.z);
     }
-
-    x.str("");
-    y.str("");
-    z.str("");
 
     //Test rotAroundAxis where axis = Y_AXIS, vector = xz, theta = 90.
     printf("Test rotAroundAxis where axis = Y_AXIS, vector = xz, theta = 90\n");
-    out << "Testing rotAroundAxis(Y_AXIS, Vector3(1 ,0, 1), 90);\n";
 
     Vector3 xzResult = rotAroundAxis(Y_AXIS, xz, theta);
-
-    x << xzResult.x;
-    y << xzResult.y;
-    z << xzResult.z;
-
-    out << "rotAroundAxis(Y_AXIS, Vector3(1, 0, 1), 90) = Vector3("
-        << x.str() << ", "
-        << y.str() << ", "
-        << z.str() << ")\n\n";
 
     if(xzResult == xzRotated){
         printf("***SUCCESS***\n");
@@ -177,26 +134,10 @@ int main(void) {
                  xzRotated.x, xzRotated.y, xzRotated.z);
     }
 
-    x.str("");
-    y.str("");
-    z.str("");
-
-
     //Test rotAroundAxis where axis = Z_AXIS, vector = xy, theta = 90.
     printf("Test rotAroundAxis where axis = xy, vector = Z_AXIS, theta = 90\n");
-    out << "Testing rotAroundAxis(Z_AXIS, Vector3(1 ,1, 0), 90);\n";
 
     Vector3 zResult = rotAroundAxis(xy, Z_AXIS, theta);
-
-    x << zResult.x;
-    y << zResult.y;
-    z << zResult.z;
-
-    out << "rotAroundAxis(Z_AXIS, Vector3(1, 1, 0), 90) = Vector3("
-        << x.str() << ", "
-        << y.str() << ", "
-        << z.str() << ")\n\n";
-
     Vector3 zRotated = Vector3(0.707107, -0.707107, 0);
 
     if(zResult == zRotated){
@@ -209,10 +150,42 @@ int main(void) {
                  zRotated.x, zRotated.y, zRotated.z);
     }
 
-    x.str("");
-    y.str("");
-    z.str("");
+    printf("Test rotAroundAxis where axis = Vector(0.75, 1, 0.5), vector = Vector(0.5, 0.25, 1), theta = 45\n");
 
+	theta = 45;
+    Vector3 testAxis    = Vector3(0.75, 1, 0.5);
+    Vector3 testVector  = Vector3(0.5, 0.25, 1);
+    Vector3 testResult  = rotAroundAxis(testAxis, testVector, theta);
+    Vector3 testRotated = Vector3(0.949473, 0.09596, 0.633872);
+
+    if(testResult == testRotated){
+        printf("***SUCCESS***\n");
+    } else {
+        printf("***FAILED***\n rotAroundAxis failed with inputs: Vector3(1, 1, 0), Z_AXIS, 45\n");
+        printf("Is ");
+        testResult.println();
+        printf("Should have been ");
+		testRotated.println();
+    }
+
+    printf("Test rotAroundAxis where axis = Vector(1278,328,153), vector = Vector(321,452,7632), theta = 21\n");
+
+	theta = 21;
+    testAxis    = Vector3(1278,328,153);
+    testVector  = Vector3(321,452,7632);
+    testResult  = rotAroundAxis(testAxis, testVector, theta);
+    testRotated = Vector3(1039.467826,-2175.025918,7262.47464);
+
+    if(testResult == testRotated){
+        printf("***SUCCESS***\n");
+    } else {
+        printf("***FAILED***\n rotAroundAxis failed with inputs: Vector3(1, 1, 0), Z_AXIS, 45\n");
+        printf("Is ");
+        testResult.println();
+        printf("Should have been ");
+		testRotated.println();
+    }
+/*
     printf("--------- Testing convexRefract() ---------\n");
 
     //Set up Lens.
@@ -223,7 +196,8 @@ int main(void) {
     testLens.lens[0].center.print();
     printf(" and radius %lf.\nThe second sphere is at ", testLens.lens[0].radius);
     testLens.lens[1].center.print();
-    printf(" and radius %lf.\nThe index of refraction is %lf\n\n", testLens.lens[1].radius, testLens.refracIdx);
+    printf(" and radius %lf.\nThe index of refraction is %lf\n\n",
+		    testLens.lens[1].radius, testLens.refracIdx);
 
     Ray ray(Vector3(0,0,-100), Vector3(0,0,1));
 
@@ -281,5 +255,5 @@ int main(void) {
         printf("Should have been: ");
         ray.direction.println();
     }
-
+*/
 }
