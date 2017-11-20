@@ -101,9 +101,11 @@ struct Vector3 {
     }
 
     //Prints the Vector.
+    void print(char* str) { printf("%sVector(%lf, %lf, %lf)",str, x, y, z); }
     void print() { printf("Vector(%lf, %lf, %lf)", x, y, z); }
 
     //Prints the Vector with a new line.
+    void println(char* str) { printf("%sVector(%lf, %lf, %lf)\n",str, x, y, z); }
     void println() { printf("Vector(%lf, %lf, %lf)\n", x, y, z); }
 
 };

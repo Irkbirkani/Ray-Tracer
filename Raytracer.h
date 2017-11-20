@@ -428,7 +428,7 @@ public:
                     //Create the new ray
                     Vector3 newRayDir = newPos - Vector3(newX, newY, z).normalize();
                     out1 << "Incoming Ray: origin: Vector(" << newX << ", " << newY << ", " << z 
-                         << ") direction: Vector(" << newRayDir.x << ", " << newRayDir.y << ", " << newRayDir.z << ")\n";
+                         << ")  direction: Vector(" << newRayDir.x << ", " << newRayDir.y << ", " << newRayDir.z << ")\n";
                     Ray ray = lens.convexRefract(Ray(Vector3(newX, newY, z), newRayDir));
                     
                     out1 << "Outgoing Ray: origin: Vector(" << ray.origin.x << ", " << ray.origin.y << ", " << ray.origin.z 
