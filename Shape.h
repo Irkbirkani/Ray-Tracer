@@ -269,7 +269,7 @@ public:
 
         Vector3 newDir;
 
-        if(std::abs(theta1) < 0.0001) {
+        if(std::abs(theta1) < 0.0001 || std::abs(theta2) < 0.0001) {
           newDir = ray.direction;
         } else {
           (ray.direction.cross(norm)).println();
@@ -277,7 +277,7 @@ public:
           Vector3 rotAxis = (ray.direction.cross(norm)).normalize();
           printf("rotation axis to find newDir ");
           rotAxis.println();
-          newDir = rotAroundAxis(rotAxis, -norm, -theta2);
+          newDir = rotAroundAxis(rotAxis, -norm, rad_to_deg(theta2));
           printf("newDir = ");
           newDir.println();
         }
@@ -299,14 +299,14 @@ public:
         theta2 = asin(refracIdx*sin(theta1) / 1.0);
         printf("new theta2 = %lf (in rad. is the angle from snell's law)\n", theta2);
 
-        if(std::abs(theta1) < 0.0001) {
+        if(std::abs(theta1) < 0.0001 || std::abs(theta2) < 0.0001) {
           //leave newDir alone
         } else {
           //Find the new direction.
           Vector3 rotAxis = (newDir.cross(norm)).normalize();
           printf("rotation axis to find newDir ");
           rotAxis.println();
-          newDir = rotAroundAxis(rotAxis, norm, theta2);
+          newDir = rotAroundAxis(rotAxis, norm, -rad_to_deg(theta2));
           printf("newDir = ");
           newDir.println();
 

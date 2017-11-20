@@ -185,7 +185,7 @@ int main(void) {
         printf("Should have been ");
 		testRotated.println();
     }
-/*
+
     printf("--------- Testing convexRefract() ---------\n");
 
     //Set up Lens.
@@ -218,7 +218,7 @@ int main(void) {
         ray.direction.println();
     }
 
-    ray = Ray(Vector3(0,0,-20), Vector3(0,5,20).normalize());
+    ray = Ray(Vector3(0,0,-20), (Vector3(0,5,0) - Vector3(0,0,-20)).normalize());
 
     printf("Testing convexRefract on ray with origin: ");
     ray.origin.print();
@@ -255,5 +255,5 @@ int main(void) {
         printf("Should have been: ");
         ray.direction.println();
     }
-*/
+
 }
