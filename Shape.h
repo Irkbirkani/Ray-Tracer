@@ -253,22 +253,28 @@ public:
         double p;
         lens[1].intersect(ray, p);
         Vector3 pos = ray.origin + ray.direction * p;
+        //pos.println("first intersect on sphere ");
         Vector3 norm = (pos - lens[1].center).normalize();
+        //norm.println("norm of pos ");
 
         //Find the angle between the incoming ray and the normal.
         double theta1 = (-ray.direction).getAngleBetween(norm);
+        //printf("theta1 in rad %lf\n", theta1);
 
         //Find the angle between the refracted ray and the normal.
         double theta2 = asin(1.0*sin(theta1) / refracIdx);
+        //printf("theta2 in rad from snell's law %lf\n", theta2);
 
         Vector3 newDir;
 
         if(std::abs(theta1) < 0.0001 || std::abs(theta2) < 0.0001) {
-          newDir = ray.direction;
+            newDir = ray.direction;
         } else {
-          //Find the new direction.
-          Vector3 rotAxis = (ray.direction.cross(norm)).normalize();
-          newDir = rotAroundAxis(rotAxis, -norm, rad_to_deg(theta2));
+            //Find the new direction.
+            Vector3 rotAxis = (ray.direction.cross(norm)).normalize();
+            //rotAxis.println("rotation Axis for newDir ");
+            newDir = rotAroundAxis(rotAxis, -norm, rad_to_deg(theta2));
+            //newDir.println("newDir ");
         }
 
         //Find new origin of the ray coming out of the lens.
@@ -276,20 +282,26 @@ public:
 
         //Find the normal at the new position.
         pos = pos + newDir * p;
+        //pos.println("second intersect with sphere ");
         norm = (pos - lens[0].center).normalize();
+        //norm.println("new norm ");
 
         //Find angle between newDir and new normal.
         theta1 = (-newDir).getAngleBetween(-norm);
+        //printf("theta1 in rad %lf\n", theta1);
 
         //Find the angle between the refracted ray and the normal.
         theta2 = asin(refracIdx*sin(theta1) / 1.0);
+        //printf("theta2 in rad from snell's law %lf\n", theta2);
 
         if(std::abs(theta1) < 0.0001 || std::abs(theta2) < 0.0001) {
-          //leave newDir alone
+            //leave newDir alone
         } else {
-          //Find the new direction.
-          Vector3 rotAxis = (newDir.cross(norm)).normalize();
-          newDir = rotAroundAxis(rotAxis, norm, -rad_to_deg(theta2));
+            //Find the new direction.
+            Vector3 rotAxis = (newDir.cross(norm)).normalize();
+          //  rotAxis.println("rotation Axis for newDir ");
+            newDir = rotAroundAxis(rotAxis, norm, -rad_to_deg(theta2));
+            //newDir.println("newDir ");
         }
 
         //Return the new ray.

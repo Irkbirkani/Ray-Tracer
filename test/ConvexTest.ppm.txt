@@ -1,3 +1,0 @@
-Incoming Ray: origin: Vector(-239.929, -290.985, -168)  direction: Vector(0.589338, 0.705218, 0.406907)
-Outgoing Ray: origin: Vector(8.10776, 5.82316, 3.25654) direction: Vector(0.586348, 0.70164, 0.404843)
-

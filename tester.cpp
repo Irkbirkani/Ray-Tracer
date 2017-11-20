@@ -186,12 +186,32 @@ int main(void) {
 		testRotated.println();
     }
 
-    printf("--------- Testing convexRefract() ---------\n");
+    printf("Test rotAroundAxis where axis = Vector(-0.027247, 0.516569, -0.855812), vector = Vector(-0.362314, -0.803020, -0.473168), theta = %lf\n",rad_to_deg(0.255918));
 
+	theta = rad_to_deg(0.255918);
+    testAxis    = Vector3(-0.027247, 0.516569, -0.855812);
+    testVector  = Vector3(-0.362314, -0.803020, -0.473168);
+    testResult  = rotAroundAxis(testAxis, -testVector, theta);
+    testRotated = Vector3(0.589338, 0.705218, 0.406907);
+
+    if(testResult == testRotated){
+        printf("***SUCCESS***\n");
+        testResult.println("testResult  ");
+        testRotated.println("testRotated ");
+    } else {
+        printf("***FAILED***\n");
+        printf("Is ");
+        testResult.println();
+        printf("Should have been ");
+		testRotated.println();
+    }
+
+   // printf("--------- Testing convexRefract() ---------\n");
     //Set up Lens.
     Lens testLens(Sphere(Vector3(), 10.0, WHITE, false),
                   Sphere(Vector3(), 10.0, WHITE, false),
                   1.0);
+/*
     printf("Lens testLens with the first sphere at ");
     testLens.lens[0].center.print();
     printf(" and radius %lf.\nThe second sphere is at ", testLens.lens[0].radius);
@@ -255,5 +275,25 @@ int main(void) {
         printf("Should have been: ");
         ray.direction.println();
     }
+    testLens.lens[0].radius = testLens.lens[1].radius = 168/16.0;
 
+    Ray ray = Ray(Vector3(-239.929, -290.985, -168), Vector3(0.589338, 0.705218, 0.406907));
+
+    printf("Testing convexRefract on ray with origin: ");
+    ray.origin.print();
+    printf(" and direction: ");
+    ray.direction.print();
+    printf("\n\n");
+    Ray retRay = testLens.convexRefract(ray);
+
+    if(ray.direction == retRay.direction) {
+        printf("***SUCCESS***\n");
+    } else {
+        printf("***FAILED***\n");
+        printf("new ray direction: ");
+        retRay.direction.println();
+        printf("Should have been: ");
+        ray.direction.println();
+    }
+*/
 }

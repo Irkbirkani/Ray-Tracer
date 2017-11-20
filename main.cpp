@@ -57,48 +57,46 @@ int main() {
     filename = "Lens/nonSphere/Concave3.2_ri_" + ri.str() + "_spR_" + spR.str() + "_dis_" + dist.str() + ".ppm";
     rt.concaveLensTrace(-width * 10, 60.0 / 180 * PI, 55.0 / 180 * PI, spheres, quads, lens, light, true, 100, filename);
 */
-    filename = "test/ConvexTest.ppm";
-    rt.convexLensTrace(-width, 60.0 / 180 * PI, 55.0 / 180 * PI, spheres, quads, lens, light, true, 100, filename);
-   // for (int i = 0; i < 6; i++) {
-   //     for (int sphR = 0; sphR < stepSize; sphR++) {
-   //         for (int dis = 0; dis < 10; dis++) {
-   //             ri << lens.refracIdx;
-   //             spR << lens.lens[0].radius;
-   //             dist << distance;
+    //filename = "test/ConvexTest.ppm";
+    //rt.convexLensTrace(-width, 60.0 / 180 * PI, 55.0 / 180 * PI, spheres, quads, lens, light, true, 100, filename);
+   for (int i = 0; i < 6; i++) {
+       for (int sphR = 0; sphR < stepSize; sphR++) {
+           for (int dis = 0; dis < 5; dis++) {
+               ri << lens.refracIdx;
+               spR << lens.lens[0].radius;
+               dist << distance;
 
-   //             if (dis <= 4) {
-   //                 printf("tracing Convex_ri_%lf_spR_ %lf_dis_ %lf\n", lens.refracIdx, lens.lens[0].radius, distance);
-   //                 filename = "test/Convex_ri_" + ri.str() + "_spR_" + spR.str() + "_dis_" + dist.str() + ".ppm";
-   //                 rt.convexLensTrace(-width, 60.0 / 180 * PI, 55.0 / 180 * PI, spheres, quads, lens, light, true, 100, filename);
-   //                 printf("finished tracing Convex_ri_%lf_spR_ %lf_dis_ %lf\n", lens.refracIdx, lens.lens[0].radius, distance);
-   //             }
-   //             else {
-   //                 printf("tracing Concave_ri_%lf_spR_ %lf_dis_ %lf\n", lens.refracIdx, lens.lens[0].radius, distance);
-   //                 filename = "test/Concave_ri_" + ri.str() + "_spR_" + spR.str() + "_dis_" + dist.str() + ".ppm";
-   //                 rt.concaveLensTrace(-width*10, 60.0 / 180 * PI, 55.0 / 180 * PI, spheres, quads, lens, light, true, 100, filename);
-   //                 printf("finished tracing Concave_ri_%lf_spR_ %lf_dis_ %lf\n", lens.refracIdx, lens.lens[0].radius, distance);
-   //             }
+               if (dis <= 4) {
+                   filename = "test/Convex_ri_" + ri.str() + "_spR_" + spR.str() + "_dis_" + dist.str() + ".ppm";
+                   rt.convexLensTrace(-width, 60.0 / 180 * PI, 55.0 / 180 * PI, spheres, quads, lens, light, true, 100, filename);
+               }
+               else {
+                   printf("tracing Concave_ri_%lf_spR_ %lf_dis_ %lf\n", lens.refracIdx, lens.lens[0].radius, distance);
+                   filename = "test/Concave_ri_" + ri.str() + "_spR_" + spR.str() + "_dis_" + dist.str() + ".ppm";
+                   rt.concaveLensTrace(-width*10, 60.0 / 180 * PI, 55.0 / 180 * PI, spheres, quads, lens, light, true, 100, filename);
+                   printf("finished tracing Concave_ri_%lf_spR_ %lf_dis_ %lf\n", lens.refracIdx, lens.lens[0].radius, distance);
+               }
 
-   //             ri.str(string());
-   //             spR.str(string());
-   //             dist.str(string());
+               ri.str(string());
+               spR.str(string());
+               dist.str(string());
 
-   //             disMult += dStep;
-   //             distance =  disMult * lens.lens[0].radius;
-   //             lens.lens[0].center.z = -distance / 2.0;
-   //             lens.lens[1].center.z =  distance / 2.0;
-   //         }
-   //         distance = 0.0;
-   //         disMult = 2.0;
-   //         lens.lens[0].center.z = 0;
-   //         lens.lens[1].center.z = 0;
-   //         lens.lens[0].radius += lrStep;
-   //         lens.lens[1].radius += lrStep;
-   //     }
-   //     lens.lens[0].radius = width / 16;
-   //     lens.lens[1].radius = width / 16;
-   //     lens.refracIdx += riStep;
-   // }
+               disMult += dStep;
+               distance =  disMult * lens.lens[0].radius;
+               lens.lens[0].center.z = -distance / 2.0;
+               lens.lens[1].center.z =  distance / 2.0;
+           }
+           distance = 0.0;
+           disMult = 2.0;
+           lens.lens[0].center.z = 0;
+           lens.lens[1].center.z = 0;
+           lens.lens[0].radius += lrStep;
+           lens.lens[1].radius += lrStep;
+       }
+       lens.lens[0].radius = width / 16;
+       lens.lens[1].radius = width / 16;
+       lens.refracIdx += riStep;
+   }
 
     //for (int i = 0; i <= 6; i++) {
     //  for (int sphR = 0; sphR < stepSize; sphR++) {
