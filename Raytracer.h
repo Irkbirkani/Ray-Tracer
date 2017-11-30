@@ -402,7 +402,7 @@ public:
         Vector3 color;
         Camera camera = cameras[0];
 
-        std::ofstream out1(file+".txt");
+        //std::ofstream out1(file+".txt");
 
         //Find adjustment amout for x and y.
         double w = -z*tan(horizFov), h = -z*tan(vertFov);
