@@ -87,7 +87,7 @@ int main() {
                lens.lens[1].center.z =  distance / 2.0;
            }
            distance = 0.0;
-           disMult = 2.0;
+           //disMult = 2.0;
            lens.lens[0].center.z = 0;
            lens.lens[1].center.z = 0;
            lens.lens[0].radius += lrStep;
