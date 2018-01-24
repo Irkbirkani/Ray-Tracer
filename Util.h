@@ -21,7 +21,7 @@
 #define Z_AXIS  Vector3(0,   0,   1)
 
 
-double deg_to_rad(double deg) { return deg * M_PI / 180.0; }
+double deg_to_rad(double deg) { return deg * PI / 180.0; }
 
 struct Vector3 {
     double x, y, z;
@@ -127,7 +127,7 @@ public:
 };
 
 
-double rad_to_deg(double rad) { return rad * 180.0 / M_PI; }
+double rad_to_deg(double rad) { return rad * 180.0 / PI; }
 
 //Rotates a vector around an arbitrary axis by a given amount.
 Vector3 rotAroundAxis(Vector3 axis, Vector3 vector, double theta) {
