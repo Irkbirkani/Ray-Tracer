@@ -2,14 +2,16 @@
 
 using std::vector;
 int main() {
-    int width = 150, height = 200;
+    int width = 500, height = 500;
     
     Image textures[3] = { Image("Images/blue-pentagons.jpg"), 
                           Image("Images/sphereTex/jupiter.jpg"),
                           Image("Images/eyechart.png") };
 
-    Lens lens(Sphere(Vector3(0,0,-45), 15, WHITE, false),
-              Sphere(Vector3(0,0, 45),  15, WHITE, false), 1.0);
+    Lens concaveLens(Sphere(Vector3(0,0,-30), 20, WHITE, false),
+                     Sphere(Vector3(0,0, 30), 20, WHITE, false), 1.0);
+    Lens convexLens (Sphere(Vector3(0,0,-10), 15, WHITE, false),
+                     Sphere(Vector3(0,0, 10), 15, WHITE, false), 1.0);
 
     Camera left  = Camera(Vector3(), Vector3(0, 0, 1), Vector3(0, 1, 0), 0.0001);
     Camera right = Camera(Vector3(0, 0, -500), Vector3(0, 0, 1), Vector3(0, 1, 0), 10);
@@ -28,8 +30,10 @@ int main() {
 
     Vector3 light = Vector3(0, 0, -100);
 
+    //rt.convexLensTrace(-width*10.0, 60.0 / 180 * PI, 55.0 / 180 * PI,
+    //                    spheres, quads, convexLens, light, true, 100, "convexTest.ppm");
     rt.concaveLensTrace(-width*10.0, 60.0 / 180 * PI, 55.0 / 180 * PI,
-                        spheres, quads, lens, light, true, 100, "concavetest.ppm");
+                        spheres, quads, concaveLens, light, true, 100, "concaveTest.ppm");
 
     return 0;
 
