@@ -3,8 +3,8 @@
 using std::vector;
 int main() {
     int width = 500, height = 500;
-    
-    Image textures[3] = { Image("Images/blue-pentagons.jpg"), 
+
+    Image textures[3] = { Image("Images/blue-pentagons.jpg"),
                           Image("Images/sphereTex/jupiter.jpg"),
                           Image("Images/eyechart.png") };
 
@@ -18,7 +18,7 @@ int main() {
     Camera cameras[2] = { left,right };
 
     RayTracer rt = RayTracer(cameras, width, height);
-    
+
     vector<Sphere> spheres;
     vector<Quad> quads;
     spheres.resize(5);

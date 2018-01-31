@@ -49,7 +49,7 @@ struct Vector3 {
 
     //Returns true if the x, y, and z coordinates are equal
     bool operator == (const Vector3& v) const {
-        return (std::abs(x - v.x) < 0.000001 && std::abs(y - v.y) < 0.000001 && std::abs(z - v.z < 0.000001));
+        return (std::abs(x - v.x) < 0.000001 && std::abs(y - v.y) < 0.000001 && std::abs(z - v.z) < 0.000001);
     }
 
     //Returns true if one of the x, y, or z coordinates does not equal the others.
