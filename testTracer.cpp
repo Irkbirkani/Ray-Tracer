@@ -30,10 +30,10 @@ int main() {
 
     Vector3 light = Vector3(0, 0, -100);
 
-    //rt.convexLensTrace(-width*10.0, 60.0 / 180 * PI, 55.0 / 180 * PI,
-    //                    spheres, quads, convexLens, light, true, 100, "convexTest.ppm");
-    rt.concaveLensTrace(-width*10.0, 60.0 / 180 * PI, 55.0 / 180 * PI,
-                        spheres, quads, concaveLens, light, true, 100, "concaveTest.ppm");
+    rt.convexLensTrace(-width*10.0, 60.0 / 180 * PI, 55.0 / 180 * PI,
+                        spheres, quads, convexLens, light, true, 100, "convexTest.ppm");
+    //rt.concaveLensTrace(-width*10.0, 60.0 / 180 * PI, 55.0 / 180 * PI,
+    //                    spheres, quads, concaveLens, light, true, 100, "concaveTest.ppm");
 
     return 0;
 
