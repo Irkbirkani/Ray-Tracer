@@ -8,8 +8,8 @@ int main() {
                           Image("Images/sphereTex/jupiter.jpg"),
                           Image("Images/eyechart.png") };
 
-    Lens concaveLens(Sphere(Vector3(0,0,-30), 20, WHITE, false),
-                     Sphere(Vector3(0,0, 30), 20, WHITE, false), 1.0);
+    Lens concaveLens(Sphere(Vector3(0,0,-45), 15, WHITE, false),
+                     Sphere(Vector3(0,0, 45), 15, WHITE, false), 1.0);
     Lens convexLens (Sphere(Vector3(0,0,-10), 15, WHITE, false),
                      Sphere(Vector3(0,0, 10), 15, WHITE, false), 1.0);
 
@@ -30,10 +30,10 @@ int main() {
 
     Vector3 light = Vector3(0, 0, -100);
 
-    rt.convexLensTrace(-width*10.0, 60.0 / 180 * PI, 55.0 / 180 * PI,
-                        spheres, quads, convexLens, light, true, 100, "convexTest.ppm");
-    //rt.concaveLensTrace(-width*10.0, 60.0 / 180 * PI, 55.0 / 180 * PI,
-    //                    spheres, quads, concaveLens, light, true, 100, "concaveTest.ppm");
+    //rt.convexLensTrace(-width*10.0, 60.0 / 180 * PI, 55.0 / 180 * PI,
+    //                    spheres, quads, convexLens, light, true, 100, "convexTest.ppm");
+    rt.concaveLensTrace(-width*10.0, 60.0 / 180 * PI, 55.0 / 180 * PI,
+                        spheres, quads, concaveLens, light, true, 100, "concaveTest.ppm");
 
     return 0;
 
