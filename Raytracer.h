@@ -543,6 +543,8 @@ public:
                     Vector3 newPos = camera.position;
                     double newX = map(x, 0, width, -w, w), newY = map(y, 0, height, -h, h);
 
+                    //printf("newX=%lf; newY=%lf\n",newX,newY);
+
                     //Check if Depth of field is enabled. If it is find a new random camera location and set newPos to that location.
                     if (DoF) {
                         //find new random camera position

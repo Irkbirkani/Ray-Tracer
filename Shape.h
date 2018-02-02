@@ -64,6 +64,7 @@ public:
         double t1 = (-b + sqrt(disc)) / (2 * a);
 
         t = (t0 > t1 && t0 > 0.001) ? t0 : t1;
+        //printf("t0 = %lf; t1 = %lf; t = t1\n", t0, t1);
         return true;
     }
 
