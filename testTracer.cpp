@@ -8,8 +8,8 @@ int main() {
                           Image("Images/sphereTex/jupiter.jpg"),
                           Image("Images/eyechart.png") };
 
-    Lens concaveLens(Sphere(Vector3(0,0,-45), 15, WHITE, false),
-                     Sphere(Vector3(0,0, 45), 15, WHITE, false), 1.0);
+    Lens concaveLens(Sphere(Vector3(0,0,-30), 20, WHITE, false),
+                     Sphere(Vector3(0,0, 30), 20, WHITE, false), 1.0);
     Lens convexLens (Sphere(Vector3(0,0,-10), 15, WHITE, false),
                      Sphere(Vector3(0,0, 10), 15, WHITE, false), 1.0);
 

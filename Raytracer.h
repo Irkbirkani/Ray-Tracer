@@ -15,8 +15,8 @@ public:
     RayTracer() { cameras[0] = Camera(); cameras[1] = Camera(); width = 500; height = 500; }
     RayTracer(Camera cam[2], double w, double h) { cameras[0] = cam[0], cameras[1] = cam[1]; width = w; height = h; }
 
-    /* 
-    Render a stereo image of the scene. 
+    /*
+    Render a stereo image of the scene.
         Arguments:
             z:       The depth of the image plane.
             spheres: A vector of Spheres comprising in the scene.
@@ -73,9 +73,9 @@ public:
 
                     //Check and see if sph and qd are not nullptrs. Of they are then there was no intersections.
                     bool sphInter = false;
-                    if (sph != nullptr) 
+                    if (sph != nullptr)
                         sphInter = sph->intersect(ray, spT);
-                    
+
                     bool qdInter = false;
                     if (qd != nullptr)
                         qdInter = qd->intersect(ray, qdT);
@@ -112,7 +112,7 @@ public:
                         else
                             color = color + sph->color *dif;
                     }
-                    else 
+                    else
                         color = color + BLACK;
 
 
@@ -196,7 +196,7 @@ public:
                     bool sphInter = false;
                     if (sph != nullptr)
                         sphInter = sph->intersect(ray, spT);
-                    
+
                     bool qdInter = false;
                     if (qd != nullptr)
                         qdInter = qd->intersect(ray, qdT);
@@ -228,7 +228,7 @@ public:
                         Vector3 pos = ray.origin + ray.direction * spT;
                         Vector3 norm = (pos - sph->center).normalize();
                         double dif = std::max(0.0,norm.dot((light - pos).normalize()));
-                        
+
                             //printf("dif = %f\n", norm.dot((light - pos).normalize()));
                         if (sph->texMap)
                             color = color + sph->getTex(norm) * dif;
@@ -426,12 +426,12 @@ public:
                         newPos = Vector3(camera.position.x + (r*cos(t)), camera.position.y + (r*sin(t)), camera.position.z);
                     }
                     //Create the new ray
-                    Vector3 newRayDir = newPos - Vector3(newX, newY, z).normalize();
-                    //out1 << "Incoming Ray: origin: Vector(" << newX << ", " << newY << ", " << z 
+                    Vector3 newRayDir = (newPos - Vector3(newX, newY, z)).normalize();
+                    //out1 << "Incoming Ray: origin: Vector(" << newX << ", " << newY << ", " << z
                     //     << ")  direction: Vector(" << newRayDir.x << ", " << newRayDir.y << ", " << newRayDir.z << ")\n";
                     Ray ray = lens.convexRefract(Ray(Vector3(newX, newY, z), newRayDir));
-                    
-                    //out1 << "Outgoing Ray: origin: Vector(" << ray.origin.x << ", " << ray.origin.y << ", " << ray.origin.z 
+
+                    //out1 << "Outgoing Ray: origin: Vector(" << ray.origin.x << ", " << ray.origin.y << ", " << ray.origin.z
                     //     << ") direction: Vector(" << ray.direction.x << ", " << ray.direction.y << ", " << ray.direction.z << ")\n\n";
 
                     double spT, qdT;
@@ -552,7 +552,7 @@ public:
                         newPos = Vector3(camera.position.x + (r*cos(t)), camera.position.y + (r*sin(t)), camera.position.z);
                     }
                     //Create the new ray
-                    Ray ray = lens.concaveRefract(Ray(Vector3(newX, newY, z), newPos - Vector3(newX, newY, z)));
+                    Ray ray = lens.concaveRefract(Ray(Vector3(newX, newY, z), (newPos - Vector3(newX, newY, z)).normalize()));
 
                     double spT, qdT;
 
