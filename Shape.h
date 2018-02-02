@@ -34,7 +34,7 @@ public:
         double t0 = (-b - sqrt(disc)) / (2 * a);
         double t1 = (-b + sqrt(disc)) / (2 * a);
 
-        t = (t0 < t1 && std::min(t0,t1) > 0.001) ? t0 : t1;
+        t = (t0 < t1 && t0 > 0.001) ? t0 : t1;
         return true;
     }
 
@@ -63,7 +63,7 @@ public:
         double t0 = (-b - sqrt(disc)) / (2 * a);
         double t1 = (-b + sqrt(disc)) / (2 * a);
 
-        t = (t0 > t1 && std::max(t0, t1) > 0.001) ? t0 : t1;
+        t = (t0 > t1 && t0 > 0.001) ? t0 : t1;
         return true;
     }
 
