@@ -534,7 +534,7 @@ public:
         double theta=atan(lens.lens[1].radius/(std::abs(lens.lens[1].center.z - camera.position.z)));
         double v = -z*tan(theta);
         double theta2 = atan((width/2.0)/(height/2.0));
-        double h = 2*(v*cos(theta2)), w = 2*(v*sin(theta2));
+        double h = (v*cos(theta2)), w = (v*sin(theta2));
         //double w = v, h = v;
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
