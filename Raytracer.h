@@ -46,16 +46,12 @@ public:
         
         //Find adjustment amout for x and y.
         double w, h;
-        //if(traceType == SPHERE || traceType == CONCAVE || traceType == CONVEX) {
-             double theta=atan(lens.lens[1].radius/(std::abs(lens.lens[1].center.z - camera.position.z)));
-             double v = -z*tan(theta);
-             double theta2 = atan((width/2.0)/(height/2.0));
-             h = (v*cos(theta2));
-             w = (v*sin(theta2));
-        //} else {
-        //     w = width / 2 + (width / 2 * z) / -camera.position.z;
-        //     h = height / 2 + (height / 2 * z) / -camera.position.z;
-        //}
+        double center = (abs(lens.lens[0].center.z - lens.lens[0].radius) + abs(lens.lens[1].center.z - lens.lens[1].radius)) / 2;
+        double theta=atan(lens.lens[1].radius/center);
+        double v = -z*tan(theta);
+        double theta2 = atan((width/2.0)/(height/2.0));
+        h = (v*cos(theta2));
+        w = (v*sin(theta2));
         int newWidth = width;
         if(traceType == STEREO)
            newWidth = width*2; 
