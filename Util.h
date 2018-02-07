@@ -163,7 +163,7 @@ Vector3 rotAroundAxis(Vector3 axis, Vector3 vector, double theta) {
 //A simple Image class.
 class Image {
 public:
-    unsigned char* image;
+    unsigned char * image;
     int width, height, channels;
     Image(char * filename = NULL)
     {

@@ -2,16 +2,16 @@
 
 using std::vector;
 int main() {
-    int width = 500, height = 500;
+    int width = 50, height = 50;
 
     Image textures[3] = { Image("Images/blue-pentagons.jpg"),
                           Image("Images/sphereTex/jupiter.jpg"),
                           Image("Images/eyechart.png") };
 
-    Lens concaveLens(Sphere(Vector3(0,0,-30), 20, WHITE, false),
-                     Sphere(Vector3(0,0, 30), 20, WHITE, false), 1.0);
-    Lens convexLens (Sphere(Vector3(0,0,-10), 20, WHITE, false),
-                     Sphere(Vector3(0,0, 10), 20, WHITE, false), 1.0);
+    Lens concaveLens(Sphere(Vector3(0,0,-45), 20, WHITE, false),
+                     Sphere(Vector3(0,0, 45), 20, WHITE, false), 1.0);
+    Lens convexLens (Sphere(Vector3(0,0,-10), 12, WHITE, false),
+                     Sphere(Vector3(0,0, 10), 15, WHITE, false), 1.0);
 
     Camera left  = Camera(Vector3(), Vector3(0, 0, 1), Vector3(0, 1, 0), 0.0001);
     Camera right = Camera(Vector3(0, 0, -500), Vector3(0, 0, 1), Vector3(0, 1, 0), 10);
@@ -30,10 +30,11 @@ int main() {
 
     Vector3 light = Vector3(0, 0, -100);
 
-    rt.convexLensTrace(-100.0, atan(4.0/10), atan(4.0/10),
-                        spheres, quads, convexLens, light, true, 100, "convexTest.ppm");
-    rt.concaveLensTrace(-100.0, atan(4.0/10), atan(4.0/10),
-                        spheres, quads, concaveLens, light, true, 100, "concaveTest.ppm");
+    rt.trace(-100.0, spheres, quads, concaveLens, light, true, 100, "traceTest.ppm", TRACE);
+    rt.trace(-100.0, spheres, quads, concaveLens, light, true, 100, "stereoTest.ppm", STEREO);
+    rt.trace(-100.0, spheres, quads, concaveLens, light, true, 100, "sphereTest.ppm", SPHERE);
+    rt.trace(-100.0, spheres, quads, concaveLens, light, true, 100, "concaveTest.ppm", CONCAVE);
+    rt.trace(-100.0, spheres, quads, convexLens,  light, true, 100, "convexTest.ppm", CONVEX);
 
     return 0;
 
