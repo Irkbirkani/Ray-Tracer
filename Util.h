@@ -1,4 +1,3 @@
-#pragma once
 
 #include <cmath>
 #include <algorithm>
@@ -6,7 +5,9 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
+
 #define PI 3.1415926535f
+
 #define WHITE   Vector3(255, 255, 255)
 #define BLACK   Vector3(0,   0,   0)
 #define RED     Vector3(255, 0,   0)
@@ -16,10 +17,18 @@
 #define YELLOW  Vector3(255, 255, 0)
 #define MAGENTA Vector3(255, 0,   255)
 #define PURPLE  Vector3(102, 51,  153)
+
 #define X_AXIS  Vector3(1,   0,   0)
 #define Y_AXIS  Vector3(0,   1,   0)
 #define Z_AXIS  Vector3(0,   0,   1)
 
+#define TRACE     0
+#define STEREO    1
+#define SPHERE    2
+#define BICONCAVE 3
+#define BICONVEX  4
+#define PCONCAVE  5
+#define PCONVEX   6
 
 double deg_to_rad(double deg) { return deg * PI / 180.0; }
 
@@ -190,3 +199,4 @@ public:
 
     Camera(Vector3 pos, Vector3 dir, Vector3 u, double a) { position = pos; direction = dir; up = u; aperature = a; }
 };
+

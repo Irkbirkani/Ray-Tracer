@@ -1,7 +1,7 @@
-#pragma once
 #include "Util.h"
 
 class Sphere {
+
 public:
     Vector3 center, color;
     Image image;
@@ -67,7 +67,7 @@ public:
         //printf("t0 = %lf; t1 = %lf; t = t1\n", t0, t1);
         return true;
     }
-
+    
     //Returns the barycentric coordinates of a point on the sphere.
     void getSphereUV(Vector3 normal, double &u, double &v)
     {
@@ -113,8 +113,8 @@ public:
     }
 };
 
-class Quad
-{
+
+class Quad {
 public:
     Vector3 A, B, C, D, normal, color;
     Image image;
@@ -162,9 +162,14 @@ private:
 class Lens {
 public:
     Sphere lens[2];
+    Plane plane;
     double refracIdx;
-    Lens() { lens[0] = Sphere(), lens[1] = Sphere(),  refracIdx = 1.0; }
-    Lens(Sphere frontLens, Sphere backLens, double refractionIndex) { lens[0] =  frontLens, lens[1] = backLens, refracIdx = refractionIndex; }
+    Lens(Sphere frontLens, Sphere backLens, Plane pl, double refractionIndex) {
+         lens[0] =  frontLens;
+         lens[1] = backLens;
+         plane = pl;
+         refracIdx = refractionIndex; 
+    }
 
     //Refracts through a sphere. Uses lens[0] for intersections.
     Ray sphereRefract(Ray ray) {
@@ -208,7 +213,7 @@ public:
         return Ray(pos, newDir);
     }
 
-    Ray concaveRefract(Ray ray) {
+    Ray biconcaveRefract(Ray ray) {
 
         //Find point of intersection on lens and find the normal at that point.
         double p;
@@ -223,7 +228,6 @@ public:
         double theta2 = asin(1.0*sin(theta1) / refracIdx);
 
         Vector3 newDir;
-        //Find the new direction.
 
         if(std::abs(theta1) < 0.0001 || std::abs(theta2) < 0.0001) {
             newDir = ray.direction;
@@ -252,32 +256,25 @@ public:
         } else {
             //Find the new direction.
             Vector3 rotAxis = (newDir.cross(norm)).normalize();
-          //  rotAxis.println("rotation Axis for newDir ");
             newDir = rotAroundAxis(rotAxis, norm, -rad_to_deg(theta2));
-            //newDir.println("newDir ");
         }
 
         //Return the new ray.
         return Ray(pos, newDir);
-
     }
 
-    Ray convexRefract(Ray ray) {
+    Ray biconvexRefract(Ray ray) {
         //Find point of intersection on lens and find the normal at that point.
         double p;
         lens[1].intersect(ray, p);
         Vector3 pos = ray.origin + ray.direction * p;
-        //pos.println("first intersect on sphere ");
         Vector3 norm = (pos - lens[1].center).normalize();
-        //norm.println("norm of pos ");
 
         //Find the angle between the incoming ray and the normal.
         double theta1 = (-ray.direction).getAngleBetween(norm);
-        //printf("theta1 in rad %lf\n", theta1);
 
         //Find the angle between the refracted ray and the normal.
         double theta2 = asin(1.0*sin(theta1) / refracIdx);
-        //printf("theta2 in rad from snell's law %lf\n", theta2);
 
         Vector3 newDir;
 
@@ -286,9 +283,7 @@ public:
         } else {
             //Find the new direction.
             Vector3 rotAxis = (ray.direction.cross(norm)).normalize();
-            //rotAxis.println("rotation Axis for newDir ");
             newDir = rotAroundAxis(rotAxis, -norm, rad_to_deg(theta2));
-            //newDir.println("newDir ");
         }
 
         //Find new origin of the ray coming out of the lens.
@@ -296,28 +291,100 @@ public:
 
         //Find the normal at the new position.
         pos = pos + newDir * p;
-        //pos.println("second intersect with sphere ");
         norm = (pos - lens[0].center).normalize();
-        //norm.println("new norm ");
 
         //Find angle between newDir and new normal.
         theta1 = (-newDir).getAngleBetween(-norm);
-        //printf("theta1 in rad %lf\n", theta1);
 
         //Find the angle between the refracted ray and the normal.
         theta2 = asin(refracIdx*sin(theta1) / 1.0);
-        //printf("theta2 in rad from snell's law %lf\n", theta2);
 
         if(std::abs(theta1) < 0.0001 || std::abs(theta2) < 0.0001) {
             //leave newDir alone
         } else {
             //Find the new direction.
             Vector3 rotAxis = (newDir.cross(norm)).normalize();
-          //  rotAxis.println("rotation Axis for newDir ");
             newDir = rotAroundAxis(rotAxis, norm, -rad_to_deg(theta2));
-            //newDir.println("newDir ");
         }
 
+        //Return the new ray.
+        return Ray(pos, newDir);
+    }
+
+    Ray refract(Ray ray, int refracType) {
+    
+        //Find point of intersection on lens and find the normal at that point.
+        double p;
+        Vector3 pos, norm;
+        switch(refracType) {
+            case BICONCAVE: lens[0].intersectFar(ray, p);
+                            pos = ray.origin + ray.direction * p;
+                            norm = (lens[0].center - pos).normalize();
+                            break;
+            case PCONCAVE:  lens[0].intersectFar(ray, p);
+                            pos = ray.origin + ray.direction * p;
+                            norm = (lens[0].center - pos).normalize();
+                            break;
+            case BICONVEX:  lens[1].intersect(ray, p);
+                            pos = ray.origin + ray.direction * p;
+                            norm = (pos - lens[1].center).normalize();
+                            break;
+            case PCONVEX:   lens[1].intersect(ray, p);
+                            pos = ray.origin + ray.direction * p;
+                            norm = (pos - lens[1].center).normalize();
+                            break;
+        }
+        
+        //Find the angle between the incoming ray and the normal.
+        double theta1 = (-ray.direction).getAngleBetween(norm);
+    
+        //Find the angle between the refracted ray and the normal.
+        double theta2 = asin(1.0*sin(theta1) / refracIdx);
+    
+        Vector3 newDir;
+    
+        if(std::abs(theta1) < 0.0001 || std::abs(theta2) < 0.0001) {
+            newDir = ray.direction;
+        } else {
+            //Find the new direction.
+            Vector3 rotAxis = (ray.direction.cross(norm)).normalize();
+            newDir = rotAroundAxis(rotAxis, -norm, rad_to_deg(theta2));
+        }
+    
+        //Find new origin of the ray coming out of the lens and the normal at the new position.
+        switch(refracType) {
+            case BICONCAVE: lens[1].intersect(Ray(pos, newDir), p);
+                            pos = pos + newDir * p;
+                            norm = (lens[1].center - pos).normalize();
+                            break;
+            case PCONCAVE:  plane.intersect(Ray(pos, newDir), p);
+                            pos = pos + newDir * p;
+                            norm = plane.N;
+                            break;
+            case BICONVEX:  lens[0].intersect(Ray(pos, newDir), p);
+                            pos = pos + newDir * p;
+                            norm = (pos - lens[0].center).normalize();
+                            break;
+            case PCONVEX:   plane.intersect(Ray(pos, newDir), p);
+                            pos = pos + newDir * p;
+                            norm = plane.N;
+                            break;
+        }
+    
+        //Find angle between newDir and new normal.
+        theta1 = (-newDir).getAngleBetween(-norm);
+    
+        //Find the angle between the refracted ray and the normal.
+        theta2 = asin(refracIdx*sin(theta1) / 1.0);
+    
+        if(std::abs(theta1) < 0.0001 || std::abs(theta2) < 0.0001) {
+            //leave newDir alone
+        } else {
+            //Find the new direction.
+            Vector3 rotAxis = (newDir.cross(norm)).normalize();
+            newDir = rotAroundAxis(rotAxis, norm, -rad_to_deg(theta2));
+        }
+    
         //Return the new ray.
         return Ray(pos, newDir);
     }

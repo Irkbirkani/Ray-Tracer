@@ -8,10 +8,12 @@ int main() {
                           Image("Images/sphereTex/jupiter.jpg"),
                           Image("Images/eyechart.png") };
 
+    Plane cavePlane(Vector3(0,0,-5), WHITE, Vector3(0,0,1));
+    Plane  vexPlane(Vector3(0,0,-10), WHITE, Vector3(0,0,1));
     Lens concaveLens(Sphere(Vector3(0,0,-45), 20, WHITE, false),
-                     Sphere(Vector3(0,0, 45), 20, WHITE, false), 1.0);
+                     Sphere(Vector3(0,0, 45), 20, WHITE, false), cavePlane, 1.0);
     Lens convexLens (Sphere(Vector3(0,0,-30), 20, WHITE, false),
-                     Sphere(Vector3(0,0, 10), 20, WHITE, false), 1.0);
+                     Sphere(Vector3(0,0, 10), 20, WHITE, false), vexPlane, 1.0);
 
     Camera left  = Camera(Vector3(), Vector3(0, 0, 1), Vector3(0, 1, 0), 0.0001);
     Camera right = Camera(Vector3(0, 0, -500), Vector3(0, 0, 1), Vector3(0, 1, 0), 10);
@@ -30,8 +32,8 @@ int main() {
 
     Vector3 light = Vector3(0, 0, -100);
 
-    rt.trace(-100.0, spheres, quads, concaveLens, light, true, 100, "concaveTest.ppm", CONCAVE);
-    rt.trace(-100.0, spheres, quads, convexLens,  light, true, 100, "convexTest.ppm", CONVEX);
+    rt.trace(-100.0, spheres, quads, concaveLens, light, true, 100, "pconvexTest.ppm", PCONVEX);
+    rt.trace(-100.0, spheres, quads, convexLens,  light, true, 100, "biconvexTest.ppm",  BICONVEX);
 
     return 0;
 

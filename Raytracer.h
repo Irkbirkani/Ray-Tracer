@@ -5,12 +5,6 @@
 
 #include "Shape.h"
 
-#define TRACE   0
-#define STEREO  1
-#define SPHERE  2
-#define CONCAVE 3
-#define CONVEX  4
-
 using std::vector;
 using std::string;
 
@@ -77,16 +71,20 @@ public:
                     //Create the new ray.
                     Ray ray;
                     switch(traceType) {
-                        case TRACE:   ray = Ray(newPos, Vector3(newX, newY, z) - newPos);
-                                      break;
-                        case STEREO:  ray = Ray(newPos, Vector3(newX, newY, z) - newPos);
-                                      break;
-                        case SPHERE:  ray = lens.sphereRefract(Ray(Vector3(newX, newY, z), (newPos - Vector3(newX, newY, z)).normalize()));
-                                      break;
-                        case CONCAVE: ray = lens.concaveRefract(Ray(Vector3(newX, newY, z), (newPos - Vector3(newX, newY, z)).normalize()));
-                                      break;
-                        case CONVEX:  ray = lens.convexRefract(Ray(Vector3(newX, newY, z), (newPos - Vector3(newX, newY, z)).normalize()));
-                                      break;
+                        case TRACE:     ray = Ray(newPos, Vector3(newX, newY, z) - newPos);
+                                        break;
+                        case STEREO:    ray = Ray(newPos, Vector3(newX, newY, z) - newPos);
+                                        break;
+                        case SPHERE:    ray = lens.sphereRefract(Ray(Vector3(newX, newY, z), (newPos - Vector3(newX, newY, z)).normalize()));
+                                        break;
+                        case BICONCAVE: ray = lens.refract(Ray(Vector3(newX, newY, z), (newPos - Vector3(newX, newY, z)).normalize()), BICONCAVE);
+                                        break;
+                        case BICONVEX:  ray = lens.refract(Ray(Vector3(newX, newY, z), (newPos - Vector3(newX, newY, z)).normalize()), BICONVEX);
+                                        break;
+                        case PCONVEX:   ray = lens.refract(Ray(Vector3(newX, newY, z), (newPos - Vector3(newX, newY, z)).normalize()), PCONVEX);
+                                        break;
+                        case PCONCAVE:  ray = lens.refract(Ray(Vector3(newX, newY, z), (newPos - Vector3(newX, newY, z)).normalize()), PCONCAVE);
+                                        break;
                     }
 
                     double spT, qdT;
