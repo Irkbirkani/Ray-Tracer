@@ -23,12 +23,11 @@
 #define Z_AXIS  Vector3(0,   0,   1)
 
 #define TRACE     0
-#define STEREO    1
-#define SPHERE    2
-#define BICONCAVE 3
-#define BICONVEX  4
-#define PCONCAVE  5
-#define PCONVEX   6
+#define SPHERE    1
+#define BICONCAVE 2
+#define BICONVEX  3
+#define PCONCAVE  4
+#define PCONVEX   5
 
 double deg_to_rad(double deg) { return deg * PI / 180.0; }
 
