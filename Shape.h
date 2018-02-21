@@ -171,6 +171,11 @@ public:
          refracIdx = refractionIndex; 
     }
 
+    void changePos(double offset) {
+        lens[0].center.x = lens[0].center.x + offset;
+        lens[1].center.x = lens[1].center.x + offset;
+        plane.center.x = plane.center.x + offset;
+    } 
     //Refracts through a sphere. Uses lens[0] for intersections.
     Ray sphereRefract(Ray ray) {
 

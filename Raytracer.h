@@ -10,11 +10,11 @@ using std::string;
 
 class RayTracer {
 public:
-    Camera cameras[2]; //0 = Left eye, 1 = right eye
+    Camera camera; //0 = Left eye, 1 = right eye
     int width, height;
 
-    RayTracer() { cameras[0] = Camera(); cameras[1] = Camera(); width = 500; height = 500; }
-    RayTracer(Camera cam[2], double w, double h) { cameras[0] = cam[0], cameras[1] = cam[1]; width = w; height = h; }
+    RayTracer() { camera = Camera(); width = 500; height = 500; }
+    RayTracer(Camera cam, double w, double h) { camera = cam; width = w; height = h; }
 
     /*
      * Render an image of the scene. Uses cameras[0] for the default camera.
@@ -34,14 +34,15 @@ public:
     {
         //Open the output stream and set the paramaters for the ppm file.
         std::ofstream out(file);
-        out << "P3\n" << width << ' ' << height << ' ' << "255\n";
+        if(stereo)
+            out << "P3\n" << width*1 << ' ' << height << ' ' << "255\n";
+        else
+            out << "P3\n" << width << ' ' << height << ' ' << "255\n";
 
         //Create color and set the camera to the left eye.
         Vector3 color;
-        Camera camera = cameras[0];
         
         //Find adjustment amout for x and y.
-        double w, h;
         double center;
         if(traceType == PCONVEX || traceType == PCONCAVE)
             center = abs(lens.lens[0].center.z - lens.plane.center.z);
@@ -50,21 +51,24 @@ public:
         double theta=atan(lens.lens[1].radius/center);
         double v = -z*tan(theta);
         double theta2 = atan((width/2.0)/(height/2.0));
-        h = (v*cos(theta2));
-        w = (v*sin(theta2));
+        double h = (v*cos(theta2));
+        double w = (v*sin(theta2));
 
         double newWidth = width;
         double offset;
         if(stereo){
+            //newWidth = width*2; 
             offset = -width / 10.0;
-            newWidth = width*2; 
+            lens.changePos(offset);
+            camera.position.x = camera.position.x + offset;
         }
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < newWidth; x++) {
 
                 if(stereo && x == width) {
-                    camera = cameras[1];
                     offset = width / 10.0;
+                    lens.changePos(offset*2);
+                    camera.position.x = camera.position.x + (offset*2);
                 }
                 //reset color
                 color = Vector3(0, 0, 0);
@@ -73,13 +77,13 @@ public:
                     //Create newPos and find newX and newY.
                     Vector3 newPos = camera.position;
                     double newX, newY;
-                    if (stereo){
+
+                    if (stereo)
                         newX = (x % width) * (2 * w /width) - w + offset;
-                        newY = y*(2*h / height) - h;
-                    } else {
+                    else 
                         newX = x*(2 * w / width) - w;
-                        newY = y*(2 * h / height) - h;
-                    }
+                    
+                    newY = y*(2*h / height) - h;
 
                     //Check if Depth of field is enabled. If it is find a new random camera location and set newPos to that location.
                     if (DoF) {
@@ -179,120 +183,6 @@ public:
         }
     }
     
-void stereoTrace(double z, std::vector<Sphere> spheres, std::vector<Quad> quads, Vector3 light, bool DoF, int samples, std::string file)
-    {
-        //Open the output stream and set the paramaters for the ppm file.
-        std::ofstream out(file);
-        out << "P3\n" << width * 2 << ' ' << height << ' ' << "255\n";
-
-        //Create color and set the camera to the left eye.
-        Vector3 color;
-        Camera camera = cameras[0];
-
-        //Calculate the stereo offset for the left eye.
-        double offset = -width / 10.0;
-        //Find adjustment amout for x and y.
-        double w = width / 2 + (width / 2 * z) / -camera.position.z, h = height / 2 + (height / 2 * z) / -camera.position.z;
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width * 2; x++) {
-
-                //switch cameras for stereo
-                if (x == width) {
-                    camera = cameras[1];
-                    offset = width / 10.0;
-                }
-                //reset color
-                color = Vector3();
-                for (int s = 0; s < samples; s++) {
-
-                    //Create newPos and find newX and newY.
-                    Vector3 newPos = camera.position;
-                    double newX = (x % width) * (2 * w / width) - w + offset, newY = y*(2 * h / height) - h;
-                    //Check if Depth of field is enabled. If it is find a new random camera location and set newPos to that location.
-                    if (DoF) {
-                        double t = 2 * PI * (rand() / (double)RAND_MAX) * camera.aperature;
-                        double u = (rand() / (double)RAND_MAX)*camera.aperature + (rand() / (double)RAND_MAX) * camera.aperature;
-                        double r = u > camera.aperature ? 2 * camera.aperature - u : u;
-                        //create new ray
-                        newPos = Vector3(camera.position.x + (r*cos(t)), camera.position.y + (r*sin(t)), camera.position.z);
-                    }
-                    Ray ray = Ray(newPos, Vector3(newX, newY, z) - newPos);
-
-                    double spT, qdT;
-
-                    //Find the closest sphere and quad in the scene.
-                    Sphere *sph = checkSphereIntersect(ray, spheres);
-                    Quad   *qd = checkQuadIntersect(ray, quads);
-
-                    //Check and see if sph and qd are not nullptrs. Of they are then there was no intersections.
-                    bool sphInter = false;
-                    if (sph != nullptr)
-                        sphInter = sph->intersect(ray, spT);
-
-                    bool qdInter = false;
-                    if (qd != nullptr)
-                        qdInter = qd->intersect(ray, qdT);
-
-                    //If there are intersections between both a sphere and a quad then return the color of the one that is closer.
-                    if (sphInter && qdInter) {
-                        if (spT < qdT) {
-                            Vector3 pos = ray.origin + ray.direction * spT;
-                            Vector3 norm = (pos - sph->center).normalize();
-                            double dif = std::max(0.0, norm.dot((light - pos).normalize()));
-                            if (sph->texMap)
-                                color = color + sph->getTex(norm) * dif;
-                            else
-                                color = color + sph->color *dif;
-                        }
-                        else {
-                            Vector3 pos = ray.direction * qdT + ray.origin;
-                            double dif = std::max(0.0, qd->normal.dot((light - pos).normalize()));
-                            if (qd->texMap)
-                                color = color + qd->getTex(pos) * dif;
-                            else
-                                color = color + qd->color * dif;
-                        }
-                    }
-
-                    //Return the color of a sphere.
-                    if (sphInter&&!qdInter)
-                    {
-                        Vector3 pos = ray.origin + ray.direction * spT;
-                        Vector3 norm = (pos - sph->center).normalize();
-                        double dif = std::max(0.0, norm.dot((light - pos).normalize()));
-                        if (sph->texMap)
-                            color = color + sph->getTex(norm) * dif;
-                        else
-                            color = color + sph->color *dif;
-                    }
-                    else
-                        color = color + BLACK;
-
-
-                    //return the color of a quad.
-                     if (qdInter&&!sphInter)
-                    {
-                         Vector3 pos = ray.direction * qdT + ray.origin;
-                         double dif = std::max(0.0, qd->normal.dot((light - pos).normalize()));
-                         if (qd->texMap)
-                             color = color + qd->getTex(pos) * dif;
-                         else
-                             color = color + qd->color * dif;
-                    }
-                    else
-                        color = color + BLACK;
-                }
-
-                // write out color
-                out << (int)color.x / samples << ' '
-                    << (int)color.y / samples << ' '
-                    << (int)color.z / samples << '\n';
-            }
-            //reset cameras
-            camera = cameras[0];
-            offset = -width / 10.0;
-        }
-    }
     //Find the closest sphere with an intersection with the ray.
     Sphere* checkSphereIntersect(Ray ray, vector<Sphere> &spheres) {
         Sphere *sOut = nullptr;
