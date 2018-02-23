@@ -54,14 +54,8 @@ public:
         double h = (v*cos(theta2));
         double w = (v*sin(theta2));
 
-        double newWidth = width;
+        double newWidth = stereo ? width*2 : width;
         double offset;
-        if(stereo){
-            newWidth = width*2; 
-            offset = -width / 10.0;
-            lens.changePos(offset);
-            camera.position.x = camera.position.x + offset;
-        }
         for (int y = 0; y < height; y++) {
             if(stereo) {
                 offset = width / 10.0;
