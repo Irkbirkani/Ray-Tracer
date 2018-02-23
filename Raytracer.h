@@ -35,7 +35,7 @@ public:
         //Open the output stream and set the paramaters for the ppm file.
         std::ofstream out(file);
         if(stereo)
-            out << "P3\n" << width*1 << ' ' << height << ' ' << "255\n";
+            out << "P3\n" << width*2 << ' ' << height << ' ' << "255\n";
         else
             out << "P3\n" << width << ' ' << height << ' ' << "255\n";
 
@@ -57,18 +57,23 @@ public:
         double newWidth = width;
         double offset;
         if(stereo){
-            //newWidth = width*2; 
+            newWidth = width*2; 
             offset = -width / 10.0;
             lens.changePos(offset);
             camera.position.x = camera.position.x + offset;
         }
         for (int y = 0; y < height; y++) {
+            if(stereo) {
+                offset = width / 10.0;
+                lens.changePos(offset);
+                camera.position.x = camera.position.x + offset;
+            }
             for (int x = 0; x < newWidth; x++) {
 
                 if(stereo && x == width) {
-                    offset = width / 10.0;
-                    lens.changePos(offset*2);
-                    camera.position.x = camera.position.x + (offset*2);
+                    offset = -width / 10.0;
+                    lens.changePos(offset);
+                    camera.position.x = camera.position.x + offset;
                 }
                 //reset color
                 color = Vector3(0, 0, 0);

@@ -31,8 +31,8 @@ int main() {
 
     Vector3 light = Vector3(0, 0, -100);
 
-    //rt.trace(-width, spheres, quads, convexLens,  light, false, true, 100, "pconvexTest.ppm",  PCONVEX);
-    rt.trace(-width, spheres, quads, convexLens, light, true, true, 100, "biconvexTest.ppm",  BICONVEX);
+    //rt.trace(-width, spheres, quads, convexLens,  light, false, true, 100, "biconvexTest.ppm",  BICONVEX);
+    rt.trace(-width, spheres, quads, convexLens, light, true, true, 100, "biconvexTestStereo.ppm",  BICONVEX);
 
     return 0;
 
