@@ -136,6 +136,7 @@ double map(double in, double in_min, double in_max, double out_min, double out_m
     return (in - in_min) * slope + out_min;
 }
 
+// A simple ray class. 
 class Ray {
 public:
     Vector3 origin;
@@ -179,7 +180,7 @@ Vector3 rotAroundAxis(Vector3 axis, Vector3 vector, double theta) {
     return res;
 }
 
-//A simple Image class.
+// A simple Image class.
 class Image {
 public:
     unsigned char * image;

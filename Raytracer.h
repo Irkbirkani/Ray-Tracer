@@ -19,7 +19,7 @@ public:
     /*
      * Render an image of the scene. Uses cameras[0] for the default camera.
      *     Arguments:
-     *         z:         The depth of the image plane.
+     *         z:         The depth of the image plane. Usually negative width.
      *         spheres:   A vector of Spheres in the scene.
      *         quads:     A vector of quads in the scene.
      *         light:     The lights position. Currently only supporting one light source.
