@@ -1,6 +1,11 @@
 #include "Raytracer.h"
+#include <sstream>
+#include <string.h>
 
 using std::vector;
+using std::stringstream;
+using std::string;
+
 int main() {
     int width = 500, height = 500;
 
@@ -31,8 +36,9 @@ int main() {
 
     Vector3 light = Vector3(0, 0, -100);
 
-    //rt.trace(-width, spheres, quads, convexLens,  light, false, true, 100, "biconvexTest.ppm",  BICONVEX);
-    rt.trace(-width, spheres, quads, convexLens, light, false, false, 1, "biconvexTestNoDoF.ppm",  BICONVEX);
+       rt.trace(-width, spheres, quads, convexLens, light, true, false, 1, "biconvexStreo14.ppm", BICONVEX);
+
+    //rt.trace(-width, spheres, quads, convexLens, light, false, false, 1, "biconvexTestNoDoF.ppm",  BICONVEX);
 
     return 0;
 
