@@ -22,6 +22,17 @@
 #define Y_AXIS  Vector3(0,   1,   0)
 #define Z_AXIS  Vector3(0,   0,   1)
 
+/* 
+ * TRACE:     A normal ray-traced image. Nothing fancy.
+ * SPHERE:    Does a lens trace through a spherical lens.
+ * BICONCAVE: Does a lens trace through a biconcave lens.
+ * BICONVEX:  Does a lens trace through a biconvex lens.
+ * PCONCAVE:  Does a lens trace through a plano-concave lens.
+ * PCONVEX:   Does a lens trace through a plano-convex lens.
+ *
+ * NOTE: Depth of field and stereo imaging can be enabled for each of these modes.
+ *       For all lens tracing, DoF is very tricky to set as the lens reduces the effect.
+ */
 #define TRACE     0
 #define SPHERE    1
 #define BICONCAVE 2

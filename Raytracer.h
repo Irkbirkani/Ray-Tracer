@@ -20,18 +20,32 @@ public:
      * Render an image of the scene. Uses cameras[0] for the default camera.
      *     Arguments:
      *         z:         The depth of the image plane.
-     *         spheres:   A vector of Spheres comprising the scene.
-     *         quads:     A vector of quads comprising the scene.
+     *         spheres:   A vector of Spheres in the scene.
+     *         quads:     A vector of quads in the scene.
      *         light:     The lights position. Currently only supporting one light source.
-     *         stereo:    Enables stereo image rendering. Does not currently work. TODO
+     *         stereo:    Enables stereo image rendering. 
      *         DoF:       Enables Depth of Field.
      *         samples:   The number of samples taken for DoF. Set to 1 if DoF is not enabled.
      *         file:      The filepath for the file you wish to write to. Must be a .ppm.
      *         traceType: The type of trace you wish to run. 
      *                    Includes TRACE, SPHERE, PCONCAVE, BICONCAVE, PCONVEX, and BICONVEX.
+     *                    See Util.h for destrictions of traceTypes.
     */
     void trace(double z, vector<Sphere> spheres, vector<Quad> quads, Lens lens, Vector3 light, bool stereo, bool DoF, int samples, string file, int traceType)
     {
+        Camera leftCamera, rightCamera;
+        Lens   leftLens = lens, rightLens = lens;
+        double offset;
+        if(stereo) {
+            offset = width / 10.0;
+            leftCamera = Camera(Vector3(camera.position.x+offset, camera.position.y, camera.position.x),
+                               camera.direction, camera.up, camera.aperature);
+            leftLens.changePos(offset);
+            rightCamera = Camera(Vector3(camera.position.x-offset, camera.position.y, camera.position.x),
+                               camera.direction, camera.up, camera.aperature);
+            rightLens.changePos(-offset);
+        }        
+
         //Open the output stream and set the paramaters for the ppm file.
         std::ofstream out(file);
         if(stereo)
@@ -55,19 +69,18 @@ public:
         double w = (v*sin(theta2));
 
         double newWidth = stereo ? width*2 : width;
-        double offset;
         for (int y = 0; y < height; y++) {
             if(stereo) {
                 offset = width / 10.0;
-                lens.changePos(offset);
-                camera.position.x = camera.position.x + offset;
+                camera = leftCamera;
+                lens = leftLens;
             }
             for (int x = 0; x < newWidth; x++) {
 
                 if(stereo && x == width) {
                     offset = -width / 10.0;
-                    lens.changePos(offset);
-                    camera.position.x = camera.position.x + offset;
+                    camera = rightCamera;
+                    lens = rightLens;
                 }
                 //reset color
                 color = Vector3(0, 0, 0);
