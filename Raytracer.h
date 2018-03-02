@@ -10,7 +10,7 @@ using std::string;
 
 class RayTracer {
 public:
-    Camera camera; //0 = Left eye, 1 = right eye
+    Camera camera; 
     int width, height;
 
     RayTracer() { camera = Camera(); width = 500; height = 500; }
@@ -31,7 +31,7 @@ public:
      *                    Includes TRACE, SPHERE, PCONCAVE, BICONCAVE, PCONVEX, and BICONVEX.
      *                    See Util.h for destrictions of traceTypes.
     */
-    void trace(double z, vector<Sphere> spheres, vector<Quad> quads, Lens lens, Vector3 light, bool stereo, bool DoF, int samples, string file, int traceType)
+    void trace(double z, vector<Sphere> spheres, vector<Quad> quads, Lens lens, Vector3 light, bool stereo, bool DoF, int samples, string file, int traceType, double ri)
     {
         Camera leftCamera, rightCamera;
         Lens   leftLens = lens, rightLens = lens;
@@ -44,6 +44,7 @@ public:
             rightCamera = Camera(Vector3(camera.position.x-offset, camera.position.y, camera.position.x),
                                camera.direction, camera.up, camera.aperature);
             rightLens.changePos(-offset);
+            rightLens.refracIdx = ri;
         }        
 
         //Open the output stream and set the paramaters for the ppm file.
