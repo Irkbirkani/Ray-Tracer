@@ -37,13 +37,13 @@ int main() {
     Vector3 light = Vector3(0, 0, -100);
 
     stringstream ri(stringstream::in | stringstream::out);
-    for (double i = 0; i <21; ++i) {
+    for (double i = 0; i <=50; ++i) {
         ri<< 1+(i/100);
         rt.trace(-width, spheres, quads, concaveLens, light,
-             true, false, 1, "biconcaveMonoTest"+ri.str()+".ppm", BICONVEX, 1.0 + i/100);
-        std::cout << "concaveLens eta = " << concaveLens.refracIdx << std::endl;
-        concaveLens.lens[0].center.println();
-        rt.camera.position.println();
+             true, false, 1, "StereoImages/biconcaveStereoTest"+ri.str()+".ppm", BICONVEX, 1.0 + i/100);
+        //std::cout << "concaveLens eta = " << concaveLens.refracIdx << std::endl;
+        //concaveLens.lens[0].center.println();
+        //rt.camera.position.println();
 
         ri.str(string());
     }

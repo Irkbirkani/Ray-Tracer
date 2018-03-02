@@ -47,18 +47,18 @@ public:
                                camera.direction, camera.up, camera.aperature);
             rightLens.changePos(-offset);
             rightLens.refracIdx = ri;
-            std::cout << "orig lens n = " << lens.refracIdx << std::endl;
-            lens.lens[0].center.println();
-            std::cout << "rightlens n = " << rightLens.refracIdx << std::endl;
-            rightLens.lens[0].center.println();
-            std::cout << "left lens n = " << leftLens.refracIdx << std::endl;
-            leftLens.lens[0].center.println();
-        } else {
-          lens.refracIdx = ri;
-          offset = width / 10.0;
-          lens.changePos(offset);
-          camera.position.x += offset;
-        }
+            //std::cout << "orig lens n = " << lens.refracIdx << std::endl;
+            //lens.lens[0].center.println();
+            //std::cout << "rightlens n = " << rightLens.refracIdx << std::endl;
+            //rightLens.lens[0].center.println();
+            //std::cout << "left lens n = " << leftLens.refracIdx << std::endl;
+            //leftLens.lens[0].center.println();
+        } //else {
+          //lens.refracIdx = ri;
+          //offset = width / 10.0;
+          //lens.changePos(offset);
+          //camera.position.x += offset;
+          //}
 
         //Open the output stream and set the paramaters for the ppm file.
         std::ofstream out(file);
