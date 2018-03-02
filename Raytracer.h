@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <fstream>
 #include <vector>
+#include <iostream>
 
 #include "Shape.h"
 
@@ -10,7 +11,7 @@ using std::string;
 
 class RayTracer {
 public:
-    Camera camera; 
+    Camera camera;
     int width, height;
 
     RayTracer() { camera = Camera(); width = 500; height = 500; }
@@ -23,17 +24,18 @@ public:
      *         spheres:   A vector of Spheres in the scene.
      *         quads:     A vector of quads in the scene.
      *         light:     The lights position. Currently only supporting one light source.
-     *         stereo:    Enables stereo image rendering. 
+     *         stereo:    Enables stereo image rendering.
      *         DoF:       Enables Depth of Field.
      *         samples:   The number of samples taken for DoF. Set to 1 if DoF is not enabled.
      *         file:      The filepath for the file you wish to write to. Must be a .ppm.
-     *         traceType: The type of trace you wish to run. 
+     *         traceType: The type of trace you wish to run.
      *                    Includes TRACE, SPHERE, PCONCAVE, BICONCAVE, PCONVEX, and BICONVEX.
      *                    See Util.h for destrictions of traceTypes.
     */
     void trace(double z, vector<Sphere> spheres, vector<Quad> quads, Lens lens, Vector3 light, bool stereo, bool DoF, int samples, string file, int traceType, double ri)
     {
         Camera leftCamera, rightCamera;
+        camera.position.x = 0;
         Lens   leftLens = lens, rightLens = lens;
         double offset;
         if(stereo) {
@@ -45,7 +47,18 @@ public:
                                camera.direction, camera.up, camera.aperature);
             rightLens.changePos(-offset);
             rightLens.refracIdx = ri;
-        }        
+            std::cout << "orig lens n = " << lens.refracIdx << std::endl;
+            lens.lens[0].center.println();
+            std::cout << "rightlens n = " << rightLens.refracIdx << std::endl;
+            rightLens.lens[0].center.println();
+            std::cout << "left lens n = " << leftLens.refracIdx << std::endl;
+            leftLens.lens[0].center.println();
+        } else {
+          lens.refracIdx = ri;
+          offset = width / 10.0;
+          lens.changePos(offset);
+          camera.position.x += offset;
+        }
 
         //Open the output stream and set the paramaters for the ppm file.
         std::ofstream out(file);
@@ -56,7 +69,7 @@ public:
 
         //Create color and set the camera to the left eye.
         Vector3 color;
-        
+
         //Find adjustment amout for x and y.
         double center;
         if(traceType == PCONVEX || traceType == PCONCAVE)
@@ -93,9 +106,9 @@ public:
 
                     if (stereo)
                         newX = (x % width) * (2 * w /width) - w + offset;
-                    else 
-                        newX = x*(2 * w / width) - w;
-                    
+                    else
+                        newX = x*(2 * w / width) + offset - w;//- w;
+
                     newY = y*(2*h / height) - h;
 
                     //Check if Depth of field is enabled. If it is find a new random camera location and set newPos to that location.
@@ -195,7 +208,7 @@ public:
             }
         }
     }
-    
+
     //Find the closest sphere with an intersection with the ray.
     Sphere* checkSphereIntersect(Ray ray, vector<Sphere> &spheres) {
         Sphere *sOut = nullptr;

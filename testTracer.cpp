@@ -27,7 +27,7 @@ int main() {
     vector<Sphere> spheres;
     vector<Quad> quads;
     spheres.resize(5);
-    
+
     spheres[0] = Sphere(Vector3(-150, -150, 600),  100.0, WHITE, true, textures[0]);
     spheres[1] = Sphere(Vector3(-100, -100, 900),  100.0, WHITE, true, textures[1]);
     spheres[2] = Sphere(Vector3( 0,    0,   1200), 100.0, WHITE, true, textures[2]);
@@ -37,10 +37,14 @@ int main() {
     Vector3 light = Vector3(0, 0, -100);
 
     stringstream ri(stringstream::in | stringstream::out);
-    for (double i = 1; i <21; ++i) {
+    for (double i = 0; i <21; ++i) {
         ri<< 1+(i/100);
         rt.trace(-width, spheres, quads, concaveLens, light,
-             true, false, 1, "biconcaveStereoTest"+ri.str()+".ppm", BICONVEX, 1.0 + i/100);
+             true, false, 1, "biconcaveMonoTest"+ri.str()+".ppm", BICONVEX, 1.0 + i/100);
+        std::cout << "concaveLens eta = " << concaveLens.refracIdx << std::endl;
+        concaveLens.lens[0].center.println();
+        rt.camera.position.println();
+
         ri.str(string());
     }
 

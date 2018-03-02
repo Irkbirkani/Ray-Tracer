@@ -1,6 +1,7 @@
 
 #include <cmath>
 #include <algorithm>
+#include <string>
 //Define required for stb_image
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
@@ -22,7 +23,7 @@
 #define Y_AXIS  Vector3(0,   1,   0)
 #define Z_AXIS  Vector3(0,   0,   1)
 
-/* 
+/*
  * TRACE:     A normal ray-traced image. Nothing fancy.
  * SPHERE:    Does a lens trace through a spherical lens.
  * BICONCAVE: Does a lens trace through a biconcave lens.
@@ -136,7 +137,7 @@ double map(double in, double in_min, double in_max, double out_min, double out_m
     return (in - in_min) * slope + out_min;
 }
 
-// A simple ray class. 
+// A simple ray class.
 class Ray {
 public:
     Vector3 origin;
@@ -210,4 +211,3 @@ public:
 
     Camera(Vector3 pos, Vector3 dir, Vector3 u, double a) { position = pos; direction = dir; up = u; aperature = a; }
 };
-
