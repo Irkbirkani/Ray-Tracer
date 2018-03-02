@@ -7,7 +7,7 @@ using std::stringstream;
 using std::string;
 
 int main() {
-    int width = 500, height = 500;
+    int width = 1344/2, height = 800;
 
     Image textures[3] = { Image("Images/blue-pentagons.jpg"),
                           Image("Images/sphereTex/jupiter.jpg"),
@@ -36,9 +36,7 @@ int main() {
 
     Vector3 light = Vector3(0, 0, -100);
 
-       rt.trace(-width, spheres, quads, convexLens, light, true, false, 1, "biconvexStreo14.ppm", BICONVEX);
-
-    //rt.trace(-width, spheres, quads, convexLens, light, false, false, 1, "biconvexTestNoDoF.ppm",  BICONVEX);
+    rt.trace(-width, spheres, quads, convexLens, light, true, false, 1, "biconvexStreoTest.ppm", BICONVEX);
 
     return 0;
 

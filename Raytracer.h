@@ -37,7 +37,7 @@ public:
         Lens   leftLens = lens, rightLens = lens;
         double offset;
         if(stereo) {
-            offset = width / 14.0;
+            offset = width / 10.0;
             leftCamera = Camera(Vector3(camera.position.x+offset, camera.position.y, camera.position.x),
                                camera.direction, camera.up, camera.aperature);
             leftLens.changePos(offset);
@@ -71,14 +71,14 @@ public:
         double newWidth = stereo ? width*2 : width;
         for (int y = 0; y < height; y++) {
             if(stereo) {
-                offset = width / 14.0;
+                offset = width / 10.0;
                 camera = leftCamera;
                 lens = leftLens;
             }
             for (int x = 0; x < newWidth; x++) {
 
                 if(stereo && x == width) {
-                    offset = -width / 14.0;
+                    offset = -width / 10.0;
                     camera = rightCamera;
                     lens = rightLens;
                 }
