@@ -1,21 +1,25 @@
-#pragma once
+#ifndef RAYTRACER_H
+#define RAYTRACER_H
 #include <algorithm>
 #include <fstream>
 #include <vector>
 #include <iostream>
 
-#include "Shape.h"
+#include "Quad.h"
+#include "Lens.h"
+#include "Camera.h"
 
 using std::vector;
 using std::string;
+using std::ofstream;
 
 class RayTracer {
 public:
     Camera camera;
     int width, height;
 
-    RayTracer() { camera = Camera(); width = 500; height = 500; }
-    RayTracer(Camera cam, double w, double h) { camera = cam; width = w; height = h; }
+    RayTracer();// { camera = Camera(); width = 500; height = 500; }
+    RayTracer(Camera cam, double w, double h);// { camera = cam; width = w; height = h; }
 
     /*
      * Render an image of the scene. Uses cameras[0] for the default camera.
@@ -32,45 +36,39 @@ public:
      *                    Includes TRACE, SPHERE, PCONCAVE, BICONCAVE, PCONVEX, and BICONVEX.
      *                    See Util.h for destrictions of traceTypes.
     */
-    void trace(double z, vector<Sphere> spheres, vector<Quad> quads, Lens lens, Vector3 light, bool stereo, bool DoF, int samples, string file, int traceType, double ri)
-    {
+    void trace(double z, vector<Sphere> spheres, vector<Quad> quads, Lens lens, Vector3 light, bool stereo, bool DoF, int samples, string file, int traceType);
+   /* {
+
+        // Setup for stereo images.
         Camera leftCamera, rightCamera;
         camera.position.x = 0;
         Lens   leftLens = lens, rightLens = lens;
         double offset;
+
         if(stereo) {
             offset = width / 10.0;
-            leftCamera = Camera(Vector3(camera.position.x+offset, camera.position.y, camera.position.x),
-                               camera.direction, camera.up, camera.aperature);
-            leftLens.changePos(offset);
-            rightCamera = Camera(Vector3(camera.position.x-offset, camera.position.y, camera.position.x),
-                               camera.direction, camera.up, camera.aperature);
-            rightLens.changePos(-offset);
-            rightLens.refracIdx = ri;
-            //std::cout << "orig lens n = " << lens.refracIdx << std::endl;
-            //lens.lens[0].center.println();
-            //std::cout << "rightlens n = " << rightLens.refracIdx << std::endl;
-            //rightLens.lens[0].center.println();
-            //std::cout << "left lens n = " << leftLens.refracIdx << std::endl;
-            //leftLens.lens[0].center.println();
-        } //else {
-          //lens.refracIdx = ri;
-          //offset = width / 10.0;
-          //lens.changePos(offset);
-          //camera.position.x += offset;
-          //}
 
-        //Open the output stream and set the paramaters for the ppm file.
-        std::ofstream out(file);
+            leftCamera = camera;
+            leftCamera.position.x = camera.position.x+offset;
+            leftLens.changePos(offset);
+
+            rightCamera = camera;
+            rightCamera.position.x = camera.position.x+offset;
+            rightLens.changePos(-offset);
+        } 
+
+        // Open the output stream and set the paramaters for the ppm file.
+        ofstream out(file);
         if(stereo)
             out << "P3\n" << width*2 << ' ' << height << ' ' << "255\n";
         else
             out << "P3\n" << width << ' ' << height << ' ' << "255\n";
 
-        //Create color and set the camera to the left eye.
+        // Create color and set the camera to the left eye.
         Vector3 color;
 
-        //Find adjustment amout for x and y.
+        // Find adjustment amount for x and y.
+        // This adjustment is to fit the image inside lenses.
         double center;
         if(traceType == PCONVEX || traceType == PCONCAVE)
             center = abs(lens.lens[0].center.z - lens.plane.center.z);
@@ -84,6 +82,7 @@ public:
 
         double newWidth = stereo ? width*2 : width;
         for (int y = 0; y < height; y++) {
+            // Reset for left eye.
             if(stereo) {
                 offset = width / 10.0;
                 camera = leftCamera;
@@ -91,35 +90,38 @@ public:
             }
             for (int x = 0; x < newWidth; x++) {
 
+                // Reset for right eye.
                 if(stereo && x == width) {
                     offset = -width / 10.0;
                     camera = rightCamera;
                     lens = rightLens;
                 }
-                //reset color
+                
+                // Reset color.
                 color = Vector3(0, 0, 0);
                 for (int s = 0; s < samples; s++) {
 
-                    //Create newPos and find newX and newY.
+                    // Create newPos and find newX and newY.
                     Vector3 newPos = camera.position;
                     double newX, newY;
 
                     if (stereo)
                         newX = (x % width) * (2 * w /width) - w + offset;
                     else
-                        newX = x*(2 * w / width) + offset - w;//- w;
+                        newX = x*(2 * w / width) + offset - w;
 
                     newY = y*(2*h / height) - h;
 
-                    //Check if Depth of field is enabled. If it is find a new random camera location and set newPos to that location.
+                    // Check if Depth of field is enabled. If it is find a new random camera location and set newPos to that location.
                     if (DoF) {
-                        //find new random camera position
+                        // Find new random camera position using uniform sampling in a circle.
                         double t = 2 * PI * (rand() / (double)RAND_MAX) * camera.aperature;
                         double u = (rand() / (double)RAND_MAX)*camera.aperature + (rand() / (double)RAND_MAX) * camera.aperature;
                         double r = u > camera.aperature ? 2 * camera.aperature - u : u;
                         newPos = Vector3(camera.position.x + (r*cos(t)), camera.position.y + (r*sin(t)), camera.position.z);
                     }
-                    //Create the new ray.
+
+                    // Create the new ray based on the type of trace specified.
                     Ray ray;
                     switch(traceType) {
                         case TRACE:     ray = Ray(newPos, Vector3(newX, newY, z) - newPos);
@@ -138,11 +140,11 @@ public:
 
                     double spT, qdT;
 
-                    //Find the closest sphere and quad in the scene.
+                    // Find the closest sphere and quad in the scene.
                     Sphere *sph = checkSphereIntersect(ray, spheres);
                     Quad   *qd = checkQuadIntersect(ray, quads);
 
-                    //Check and see if sph and qd are not nullptrs. Of they are then there was no intersections.
+                    // Check and see if sph and qd are not nullptrs. If they are then there was no intersections.
                     bool sphInter = false;
                     if (sph != nullptr)
                         sphInter = sph->intersect(ray, spT);
@@ -151,7 +153,7 @@ public:
                     if (qd != nullptr)
                         qdInter = qd->intersect(ray, qdT);
 
-                    //If there are intersections between both a sphere and a quad then return the color of the one that is closer.
+                    // If there are intersections between both a sphere and a quad then return the color of the one that is closer.
                     if (sphInter && qdInter) {
                         if (spT < qdT) {
                             Vector3 pos = ray.origin + ray.direction * spT;
@@ -172,7 +174,7 @@ public:
                         }
                     }
 
-                    //Return the color of a sphere.
+                    // Return the color of a sphere.
                     if (sphInter && !qdInter)
                     {
                         Vector3 pos = ray.origin + ray.direction * spT;
@@ -187,7 +189,7 @@ public:
                     else
                         color = color + BLACK;
 
-                    //return the color of a quad.
+                    // Return the color of a quad.
                     if (qdInter && !sphInter)
                     {
                         Vector3 pos = ray.direction * qdT + ray.origin;
@@ -201,16 +203,20 @@ public:
                         color = color + BLACK;
                 }
 
-                // write out color
+                // Write out color
                 out << (int)color.x / samples << ' '
                     << (int)color.y / samples << ' '
                     << (int)color.z / samples << '\n';
             }
         }
+        // Close outfile.
+        out.close();
     }
+*/
 
-    //Find the closest sphere with an intersection with the ray.
-    Sphere* checkSphereIntersect(Ray ray, vector<Sphere> &spheres) {
+private:
+    // Find the closest sphere with an intersection with the ray.
+    Sphere* checkSphereIntersect(Ray ray, vector<Sphere> &spheres); /* {
         Sphere *sOut = nullptr;
         double minSphere = 10000000000, t;
         for (int s = 0; s < spheres.size(); s++) {
@@ -223,9 +229,10 @@ public:
         }
         return sOut;
     }
+*/
 
-    //Find the closest quad with an intersection with the ray.
-    Quad* checkQuadIntersect(Ray ray, vector<Quad> quads) {
+    // Find the closest quad with an intersection with the ray.
+    Quad* checkQuadIntersect(Ray ray, vector<Quad> quads); /* {
         Quad* qOut = nullptr;
         double minQuad = 10000000000, t;
         for (int q = 0; q < quads.size(); q++) {
@@ -238,5 +245,6 @@ public:
         }
         return qOut;
     }
-
+*/
 };
+#endif

@@ -15,10 +15,10 @@ int main() {
 
     Plane cavePlane(Vector3(0,0,-5),  WHITE, Vector3(0,0,1));
     Plane  vexPlane(Vector3(0,0,-10), WHITE, Vector3(0,0,1));
-    Lens concaveLens(Sphere(Vector3(0,0,-30), 20, WHITE, false),
-                     Sphere(Vector3(0,0, 30), 20, WHITE, false), cavePlane, 1.0);
-    Lens convexLens (Sphere(Vector3(0,0,-30), 20, WHITE, false),
-                     Sphere(Vector3(0,0, 10), 20, WHITE, false), vexPlane, 1.0);
+    Lens concaveLens(Sphere(Vector3(0,0,-30), 20, WHITE, false, NULL),
+                     Sphere(Vector3(0,0, 30), 20, WHITE, false, NULL), cavePlane, 1.0);
+    Lens convexLens (Sphere(Vector3(0,0,-30), 20, WHITE, false, NULL),
+                     Sphere(Vector3(0,0, 10), 20, WHITE, false, NULL), vexPlane, 1.0);
 
     Camera camera = Camera(Vector3(), Vector3(0, 0, 1), Vector3(0, 1, 0), 0.0001);
 
@@ -37,10 +37,10 @@ int main() {
     Vector3 light = Vector3(0, 0, -100);
 
     stringstream ri(stringstream::in | stringstream::out);
-    for (double i = 0; i <=50; ++i) {
+    for (double i = 0; i <=1; ++i) {
         ri<< 1+(i/100);
         rt.trace(-width, spheres, quads, concaveLens, light,
-             true, false, 1, "StereoImages/biconcaveStereoTest"+ri.str()+".ppm", BICONVEX, 1.0 + i/100);
+             true, false, 1, "StereoImages/biconcaveStereoTest"+ri.str()+".ppm", BICONVEX);
         //std::cout << "concaveLens eta = " << concaveLens.refracIdx << std::endl;
         //concaveLens.lens[0].center.println();
         //rt.camera.position.println();
