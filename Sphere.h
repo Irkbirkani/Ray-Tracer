@@ -14,7 +14,7 @@ public:
     bool texMap; 
 
     Sphere(Vector3 c = Vector3(), double r = 1000, Vector3 col = WHITE,
-               bool tm = false, Image img = NULL);
+               bool tm = false, Image img = Image(""));
 
     // Returns true if a ray intersects with the sphere.
     // The closest point of intersection is set as t.

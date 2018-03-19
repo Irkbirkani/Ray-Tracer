@@ -22,7 +22,7 @@ void RayTracer::trace(double z, vector<Sphere> spheres, vector<Quad> quads, Lens
         leftLens.changePos(offset);
 
         rightCamera = camera;
-        rightCamera.position.x = camera.position.x+offset;
+        rightCamera.position.x = camera.position.x-offset;
         rightLens.changePos(-offset);
     } 
 
@@ -185,7 +185,8 @@ void RayTracer::trace(double z, vector<Sphere> spheres, vector<Quad> quads, Lens
 Sphere* RayTracer::checkSphereIntersect(Ray ray, vector<Sphere> &spheres) {
     Sphere *sOut = nullptr;
     double minSphere = 10000000000, t;
-    for (int s = 0; s < spheres.size(); s++) {
+    int max = spheres.size(); 
+    for (int s = 0; s < max; s++) {
         if (spheres[s].intersect(ray, t)) {
             if (t < minSphere) {
                 minSphere = t;
@@ -199,7 +200,8 @@ Sphere* RayTracer::checkSphereIntersect(Ray ray, vector<Sphere> &spheres) {
 Quad* RayTracer::checkQuadIntersect(Ray ray, vector<Quad> quads) {
     Quad* qOut = nullptr;
     double minQuad = 10000000000, t;
-    for (int q = 0; q < quads.size(); q++) {
+    int max = quads.size();
+    for (int q = 0; q < max; q++) {
         if (quads[q].intersect(ray, t)) {
             if (t < minQuad) {
                 minQuad = t;
