@@ -10,7 +10,7 @@ CXXFLAGS = -Wall -g -std=c++11
 # Targets needed to bring the executable up to date
 
 test: testTracer.o Vector3.o Ray.o Util.o Camera.o Image.o Quad.o Sphere.o Plane.o Lens.o Raytracer.o
-	$(CXX) $(CXXFLAGS) -o test testTracer.o Lens.o Raytracer.o Image.o Quad.o Sphere.o Camera.o Vector3.o Plane.o Util.o Ray.o
+	$(CXX) $(CXXFLAGS) -o trace testTracer.o Lens.o Raytracer.o Image.o Quad.o Sphere.o Camera.o Vector3.o Plane.o Util.o Ray.o
 
 test.o: testTracer.cpp Camera.h Image.h Lens.h Plane.h Quad.h Raytracer.h Sphere.h Util.h Vector3.h
 	$(CXX) $(CXXFLAGS) -c testTracer.cpp
@@ -27,5 +27,5 @@ Util.o: Vector3.h
 Vector3.o: Util.h
 
 clean : 
-	rm testTracer.o Lens.o Raytracer.o Image.o Quad.o Sphere.o Camera.o Vector3.o Plane.o Util.o Ray.o test
+	rm testTracer.o Lens.o Raytracer.o Image.o Quad.o Sphere.o Camera.o Vector3.o Plane.o Util.o Ray.o trace
 
