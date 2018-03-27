@@ -1,0 +1,15 @@
+Fc = F/(1-xF)
+
+Fc = power corrected for vertex distance.
+F  = original power.
+x  = change in distance in meters.
+
+Since most mesurements are performed at 12mm and the average distance between the cornea and the lens
+of the VR head set is also 12mm, x will be the distance from the origin to the back of the lens in
+in the virtual system.
+
+Steps: 
+    1. Ask for F.
+    2. Find Fc.
+    3. Use Fc in lensmaker's to find refraction Index.
+    4. Change ri of lens and continue as normal.

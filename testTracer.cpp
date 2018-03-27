@@ -37,15 +37,26 @@ int main() {
     spheres[3] = Sphere(Vector3( 100,  100, 1500), 100.0, WHITE, true, textures[0]);
     spheres[4] = Sphere(Vector3( 200,  200, 1800), 100.0, WHITE, true, textures[1]);
 
+    //float F;
+    //Lens lens = F > 0 ? convexLens : concaveLens;
+    //printf("Enter perscription: ");
+    //scanf("%f", &F);
+    //float x = std::abs(lens.lens[0].radius - lens.lens[0].center.z);
+    //float Fc = F / (1 - x * F);
+    //float ri = (lens.lens[0].radius + Fc)/Fc;
+    //lens.refracIdx = ri;
+
     Vector3 light = Vector3(0, 0, -100);
-    //stringstream ri(stringstream::in | stringstream::out);
-    //for (double i = 0; i <=1; ++i) {
-    //    ri<< 1+(i/100);
-        rt.trace(-width, spheres, quads, concaveLens, light,
-             true, false, 1, "biconcaveStereoTest.ppm", BICONVEX);
-    //    ri.str(string());
-    //}
+
+//    if (F > 0) {
+        rt.trace(-width, spheres, quads, convexLens, light,
+             true, false, 1, "plConvexImage.ppm", PCONVEX);
+//    } else {
+//        rt.trace(-width, spheres, quads, lens, light,
+//             true, false, 1, "plConcaveImage.ppm", PCONCAVE);
+//    }
+//            
+
 
     return 0;
-
 }

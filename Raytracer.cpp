@@ -4,7 +4,7 @@ RayTracer::RayTracer() : camera(Camera()), width(500), height(500) {}
 RayTracer::RayTracer(Camera cam, double w, double h) : camera(cam), width(w), height(h) {}
 
 
-void RayTracer::trace(double z, vector<Sphere> spheres, vector<Quad> quads, Lens lens, Vector3 light,
+void RayTracer::trace(double z,vector<Sphere> spheres, vector<Quad> quads, Lens lens, Vector3 light,
                        bool stereo, bool DoF, int samples, string file, int traceType)
 {
 
