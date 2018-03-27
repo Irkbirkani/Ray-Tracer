@@ -7,7 +7,7 @@ using std::stringstream;
 using std::string;
 
 int main() {
-    int width = 1344/2, height = 800;
+    int width = 672, height = 800;
 
     string img1 = "Images/blue-pentagons.jpg";
     string img2 = "Images/sphereTex/jupiter.jpg";
@@ -16,11 +16,11 @@ int main() {
                           Image(img2),
                           Image(img3) };
 
-    Plane cavePlane(Vector3(0,0,-5),  WHITE, Vector3(0,0,1));
-    Plane  vexPlane(Vector3(0,0,-10), WHITE, Vector3(0,0,1));
+    Plane cavePlane(Vector3(0,0,-5), WHITE, Vector3(0,0,1));
+    Plane  vexPlane(Vector3(0,0, 0), WHITE, Vector3(0,0,1));
     Lens concaveLens(Sphere(Vector3(0,0,-30), 20, WHITE, false, Image("")),
                      Sphere(Vector3(0,0, 30), 20, WHITE, false, Image("")), cavePlane, 1.0);
-    Lens convexLens (Sphere(Vector3(0,0,-30), 20, WHITE, false, Image("")),
+    Lens convexLens (Sphere(Vector3(0,0,-10), 20, WHITE, false, Image("")),
                      Sphere(Vector3(0,0, 10), 20, WHITE, false, Image("")), vexPlane, 1.0);
 
     Camera camera = Camera(Vector3(), Vector3(0, 0, 1), Vector3(0, 1, 0), 0.0001);
@@ -37,25 +37,30 @@ int main() {
     spheres[3] = Sphere(Vector3( 100,  100, 1500), 100.0, WHITE, true, textures[0]);
     spheres[4] = Sphere(Vector3( 200,  200, 1800), 100.0, WHITE, true, textures[1]);
 
-    //float F;
-    //Lens lens = F > 0 ? convexLens : concaveLens;
-    //printf("Enter perscription: ");
-    //scanf("%f", &F);
-    //float x = std::abs(lens.lens[0].radius - lens.lens[0].center.z);
-    //float Fc = F / (1 - x * F);
-    //float ri = (lens.lens[0].radius + Fc)/Fc;
-    //lens.refracIdx = ri;
+
+    float F;
+    Lens lens = F > 0 ? convexLens : concaveLens;
+    printf("Enter perscription: ");
+    scanf("%f", &F);
+    printf("F: %f\n", F);
+    float d = toMM(width,std::abs(lens.lens[0].radius - lens.lens[0].center.z));
+    printf("d: %f\n",d);
+    float Fc = F / (1 - d * F);
+    printf("Fc: %f\n", Fc);
+    double ri = (lens.lens[0].radius + Fc)/Fc;
+    printf("ri: %f\n", ri);
+    lens.refracIdx = ri;
 
     Vector3 light = Vector3(0, 0, -100);
 
-//    if (F > 0) {
-        rt.trace(-width, spheres, quads, convexLens, light,
+    if (F > 0) {
+        rt.trace(-width, spheres, quads, lens, light,
              true, false, 1, "plConvexImage.ppm", PCONVEX);
-//    } else {
-//        rt.trace(-width, spheres, quads, lens, light,
-//             true, false, 1, "plConcaveImage.ppm", PCONCAVE);
-//    }
-//            
+    } else {
+        rt.trace(-width, spheres, quads, lens, light,
+             true, false, 1, "plConcaveImage.ppm", PCONCAVE);
+    }
+            
 
 
     return 0;

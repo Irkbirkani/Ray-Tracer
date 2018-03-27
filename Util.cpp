@@ -1,5 +1,7 @@
 #include "Util.h"
 
+double toMM(int width, double value){ return value*(63.0/(width/10.0)); }
+
 double deg_to_rad(double deg) { return deg * PI / 180.0; }
 
 double rad_to_deg(double rad) { return rad * 180.0 / PI; }
