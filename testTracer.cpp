@@ -43,7 +43,7 @@ int main() {
     printf("Enter perscription: ");
     scanf("%f", &F);
     printf("F: %f\n", F);
-    float d = toMM(width,std::abs(lens.lens[0].radius - lens.lens[0].center.z));
+    float d = toMM(width,std::abs(lens.lens[0].radius - lens.lens[0].center.z))/1000.0;
     printf("d: %f\n",d);
     float Fc = F / (1 - d * F);
     printf("Fc: %f\n", Fc);
