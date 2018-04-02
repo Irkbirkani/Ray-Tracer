@@ -16,12 +16,12 @@ int main() {
                           Image(img2),
                           Image(img3) };
 
-    Plane cavePlane(Vector3(0,0,-5), WHITE, Vector3(0,0,1));
+    Plane cavePlane(Vector3(0,0,0), WHITE, Vector3(0,0,1));
     Plane  vexPlane(Vector3(0,0, 0), WHITE, Vector3(0,0,1));
-    Lens concaveLens(Sphere(Vector3(0,0,-30), 20, WHITE, false, Image("")),
-                     Sphere(Vector3(0,0, 30), 20, WHITE, false, Image("")), cavePlane, 1.0);
-    Lens convexLens (Sphere(Vector3(0,0,-10), 20, WHITE, false, Image("")),
-                     Sphere(Vector3(0,0, 10), 20, WHITE, false, Image("")), vexPlane, 1.0);
+    Lens concaveLens(Sphere(Vector3(0,0,-30), 10, WHITE, false, Image("")),
+                     Sphere(Vector3(0,0, 30), 10, WHITE, false, Image("")), cavePlane, 1.0);
+    Lens convexLens (Sphere(Vector3(0,0,-10), 10, WHITE, false, Image("")),
+                     Sphere(Vector3(0,0, 10), 10, WHITE, false, Image("")), vexPlane, 1.2);
 
     Camera camera = Camera(Vector3(), Vector3(0, 0, 1), Vector3(0, 1, 0), 0.0001);
 
@@ -47,7 +47,7 @@ int main() {
     printf("d: %f\n",d);
     float Fc = F / (1 - d * F);
     printf("Fc: %f\n", Fc);
-    double ri = (lens.lens[0].radius + Fc)/Fc;
+    double ri = ((toMM(width, lens.lens[0].radius)/1000) + Fc)/Fc;
     printf("ri: %f\n", ri);
     lens.refracIdx = ri;
 
@@ -56,6 +56,8 @@ int main() {
     if (F > 0) {
         rt.trace(-width, spheres, quads, lens, light,
              true, false, 1, "plConvexImage.ppm", PCONVEX);
+       // rt.trace(-width, spheres, quads, lens, light,
+       //      true, false, 1, "biConvexImage.ppm", BICONVEX);
     } else {
         rt.trace(-width, spheres, quads, lens, light,
              true, false, 1, "plConcaveImage.ppm", PCONCAVE);

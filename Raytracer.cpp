@@ -39,10 +39,13 @@ void RayTracer::trace(double z,vector<Sphere> spheres, vector<Quad> quads, Lens 
     // Find adjustment amount for x and y.
     // This adjustment is to fit the image inside lenses.
     double center;
-    if(traceType == PCONVEX || traceType == PCONCAVE)
+    if(traceType == PCONVEX || traceType == PCONCAVE) {
         center = abs(lens.lens[0].center.z - lens.plane.center.z);
-    else
+        printf("center: %lf, biCenter %lf\n", center, (abs(lens.lens[0].center.z - lens.lens[0].radius) + abs(lens.lens[1].center.z - lens.lens[1].radius)) / 2.0);
+    }
+    else {
         center = (abs(lens.lens[0].center.z - lens.lens[0].radius) + abs(lens.lens[1].center.z - lens.lens[1].radius)) / 2;
+    }
     double theta=atan(lens.lens[1].radius/center);
     double v = -z*tan(theta);
     double theta2 = atan((width/2.0)/(height/2.0));
