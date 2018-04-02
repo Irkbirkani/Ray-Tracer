@@ -7,15 +7,13 @@ RayTracer::RayTracer(Camera cam, double w, double h) : camera(cam), width(w), he
 void RayTracer::trace(double z,vector<Sphere> spheres, vector<Quad> quads, Lens lens, Vector3 light,
                        bool stereo, bool DoF, int samples, string file, int traceType)
 {
-
     // Setup for stereo images.
     Camera leftCamera, rightCamera;
-    camera.position.x = 0;
     Lens   leftLens = lens, rightLens = lens;
     double offset;
 
     if(stereo) {
-        offset = width / 10.0;
+        offset = width / 10.0 * 2.0;
 
         leftCamera = camera;
         leftCamera.position.x = camera.position.x+offset;
@@ -37,15 +35,14 @@ void RayTracer::trace(double z,vector<Sphere> spheres, vector<Quad> quads, Lens 
     Vector3 color;
 
     // Find adjustment amount for x and y.
-    // This adjustment is to fit the image inside lenses.
+    // This adjustment is to fit the image inside the lenses.
     double center;
-    if(traceType == PCONVEX || traceType == PCONCAVE) {
+    if(traceType == PCONVEX || traceType == PCONCAVE) 
         center = abs(lens.lens[0].center.z - lens.plane.center.z);
-        printf("center: %lf, biCenter %lf\n", center, (abs(lens.lens[0].center.z - lens.lens[0].radius) + abs(lens.lens[1].center.z - lens.lens[1].radius)) / 2.0);
-    }
-    else {
+    
+    else 
         center = (abs(lens.lens[0].center.z - lens.lens[0].radius) + abs(lens.lens[1].center.z - lens.lens[1].radius)) / 2;
-    }
+    
     double theta=atan(lens.lens[1].radius/center);
     double v = -z*tan(theta);
     double theta2 = atan((width/2.0)/(height/2.0));
@@ -56,7 +53,7 @@ void RayTracer::trace(double z,vector<Sphere> spheres, vector<Quad> quads, Lens 
     for (int y = 0; y < height; y++) {
         // Reset for left eye.
         if(stereo) {
-            offset = width / 10.0;
+            offset = width / 10.0 * 2.0;
             camera = leftCamera;
             lens = leftLens;
         }
@@ -64,7 +61,7 @@ void RayTracer::trace(double z,vector<Sphere> spheres, vector<Quad> quads, Lens 
 
             // Reset for right eye.
             if(stereo && x == width) {
-                offset = -width / 10.0;
+                offset = -width / 10.0 * 2.0;
                 camera = rightCamera;
                 lens = rightLens;
             }

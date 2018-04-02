@@ -27,5 +27,5 @@ Util.o: Vector3.h
 Vector3.o: Util.h
 
 clean : 
-	rm testTracer.o Lens.o Raytracer.o Image.o Quad.o Sphere.o Camera.o Vector3.o Plane.o Util.o Ray.o trace
+	rm *.o trace
 

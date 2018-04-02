@@ -37,33 +37,27 @@ int main() {
     spheres[3] = Sphere(Vector3( 100,  100, 1500), 100.0, WHITE, true, textures[0]);
     spheres[4] = Sphere(Vector3( 200,  200, 1800), 100.0, WHITE, true, textures[1]);
 
+    Vector3 light = Vector3(0, 0, -100);
 
     float F;
     Lens lens = F > 0 ? convexLens : concaveLens;
     printf("Enter perscription: ");
     scanf("%f", &F);
-    printf("F: %f\n", F);
     float d = toMM(width,std::abs(lens.lens[0].radius - lens.lens[0].center.z))/1000.0;
-    printf("d: %f\n",d);
+    printf("distance to lens: %f\n",d);
     float Fc = F / (1 - d * F);
-    printf("Fc: %f\n", Fc);
+    printf("new perscription: %f\n", Fc);
     double ri = ((toMM(width, lens.lens[0].radius)/1000) + Fc)/Fc;
-    printf("ri: %f\n", ri);
+    printf("new refactive index: %f\n", ri);
     lens.refracIdx = ri;
-
-    Vector3 light = Vector3(0, 0, -100);
 
     if (F > 0) {
         rt.trace(-width, spheres, quads, lens, light,
              true, false, 1, "plConvexImage.ppm", PCONVEX);
-       // rt.trace(-width, spheres, quads, lens, light,
-       //      true, false, 1, "biConvexImage.ppm", BICONVEX);
     } else {
         rt.trace(-width, spheres, quads, lens, light,
              true, false, 1, "plConcaveImage.ppm", PCONCAVE);
     }
-            
-
 
     return 0;
 }
