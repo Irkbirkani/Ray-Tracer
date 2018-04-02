@@ -7,7 +7,7 @@ using std::stringstream;
 using std::string;
 
 int main() {
-    int width = 672, height = 800;
+    int width = 672*2, height = 1600;
 
     string img1 = "Images/blue-pentagons.jpg";
     string img2 = "Images/sphereTex/jupiter.jpg";
