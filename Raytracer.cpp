@@ -13,7 +13,7 @@ void RayTracer::trace(double z,vector<Sphere> spheres, vector<Quad> quads, Lens 
     double offset;
 
     if(stereo) {
-        offset = width / 10.0 * 2.0;
+        offset = width / 10.0;
 
         leftCamera = camera;
         leftCamera.position.x = camera.position.x+offset;
@@ -53,7 +53,7 @@ void RayTracer::trace(double z,vector<Sphere> spheres, vector<Quad> quads, Lens 
     for (int y = 0; y < height; y++) {
         // Reset for left eye.
         if(stereo) {
-            offset = width / 10.0 * 2.0;
+            offset = width / 10.0;
             camera = leftCamera;
             lens = leftLens;
         }
@@ -61,7 +61,7 @@ void RayTracer::trace(double z,vector<Sphere> spheres, vector<Quad> quads, Lens 
 
             // Reset for right eye.
             if(stereo && x == width) {
-                offset = -width / 10.0 * 2.0;
+                offset = -width / 10.0;
                 camera = rightCamera;
                 lens = rightLens;
             }
