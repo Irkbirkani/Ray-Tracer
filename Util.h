@@ -39,7 +39,7 @@
 #define PCONCAVE  4
 #define PCONVEX   5
 
-double toMM(int width, double value);
+double toMM(double width, double value);
 
 double deg_to_rad(double deg);// { return deg * PI / 180.0; }
 

@@ -18,10 +18,10 @@ int main() {
 
     Plane cavePlane(Vector3(0,0,0), WHITE, Vector3(0,0,1));
     Plane  vexPlane(Vector3(0,0, 0), WHITE, Vector3(0,0,1));
-    Lens concaveLens(Sphere(Vector3(0,0,-30), 10, WHITE, false, Image("")),
-                     Sphere(Vector3(0,0, 30), 10, WHITE, false, Image("")), cavePlane, 1.0);
-    Lens convexLens (Sphere(Vector3(0,0,-10), 10, WHITE, false, Image("")),
-                     Sphere(Vector3(0,0, 10), 10, WHITE, false, Image("")), vexPlane, 1.2);
+    Lens concaveLens(Sphere(Vector3(0,0,-30), 20, WHITE, false, Image("")),
+                     Sphere(Vector3(0,0, 30), 20, WHITE, false, Image("")), cavePlane, 1.0);
+    Lens convexLens (Sphere(Vector3(0,0,-10), 20, WHITE, false, Image("")),
+                     Sphere(Vector3(0,0, 10), 20, WHITE, false, Image("")), vexPlane, 1.2);
 
     Camera camera = Camera(Vector3(), Vector3(0, 0, 1), Vector3(0, 1, 0), 0.0001);
 
@@ -30,6 +30,8 @@ int main() {
     vector<Sphere> spheres;
     vector<Quad> quads;
     spheres.resize(5);
+
+    double offset = width/20.0;
 
     spheres[0] = Sphere(Vector3(-150, -150, 600),  100.0, WHITE, true, textures[0]);
     spheres[1] = Sphere(Vector3(-100, -100, 900),  100.0, WHITE, true, textures[1]);
@@ -43,19 +45,19 @@ int main() {
     Lens lens = F > 0 ? convexLens : concaveLens;
     printf("Enter perscription: ");
     scanf("%f", &F);
-    float d = toMM(width,std::abs(lens.lens[0].radius - lens.lens[0].center.z))/1000.0;
+    float d = toMM(offset,std::abs(lens.lens[0].radius - lens.lens[0].center.z))/1000.0;
     printf("distance to lens: %f\n",d);
     float Fc = F / (1 - d * F);
     printf("new perscription: %f\n", Fc);
-    double ri = ((toMM(width, lens.lens[0].radius)/1000) + Fc)/Fc;
+    double ri = ((toMM(offset, lens.lens[0].radius)/1000) * Fc)+1;
     printf("new refactive index: %f\n", ri);
     lens.refracIdx = ri;
 
     if (F > 0) {
-        rt.trace(-width, spheres, quads, lens, light,
+        rt.trace(-width, offset, spheres, quads, lens, light,
              true, false, 1, "plConvexImage.ppm", PCONVEX);
     } else {
-        rt.trace(-width, spheres, quads, lens, light,
+        rt.trace(-width, offset, spheres, quads, lens, light,
              true, false, 1, "plConcaveImage.ppm", PCONCAVE);
     }
 

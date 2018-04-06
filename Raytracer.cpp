@@ -4,24 +4,24 @@ RayTracer::RayTracer() : camera(Camera()), width(500), height(500) {}
 RayTracer::RayTracer(Camera cam, double w, double h) : camera(cam), width(w), height(h) {}
 
 
-void RayTracer::trace(double z,vector<Sphere> spheres, vector<Quad> quads, Lens lens, Vector3 light,
-                       bool stereo, bool DoF, int samples, string file, int traceType)
+void RayTracer::trace(double z, double offset, vector<Sphere> spheres, vector<Quad> quads, Lens lens,
+                Vector3 light, bool stereo, bool DoF, int samples, string file, int traceType)
 {
     // Setup for stereo images.
     Camera leftCamera, rightCamera;
     Lens   leftLens = lens, rightLens = lens;
-    double offset;
+    double off;
 
     if(stereo) {
-        offset = width / 10.0;
+        off = offset; 
 
         leftCamera = camera;
-        leftCamera.position.x = camera.position.x+offset;
-        leftLens.changePos(offset);
+        leftCamera.position.x = camera.position.x+off;
+        leftLens.changePos(off);
 
         rightCamera = camera;
-        rightCamera.position.x = camera.position.x-offset;
-        rightLens.changePos(-offset);
+        rightCamera.position.x = camera.position.x-off;
+        rightLens.changePos(-off);
     } 
 
     // Open the output stream and set the paramaters for the ppm file.
@@ -53,7 +53,7 @@ void RayTracer::trace(double z,vector<Sphere> spheres, vector<Quad> quads, Lens 
     for (int y = 0; y < height; y++) {
         // Reset for left eye.
         if(stereo) {
-            offset = width / 10.0;
+            off = offset;
             camera = leftCamera;
             lens = leftLens;
         }
@@ -61,7 +61,7 @@ void RayTracer::trace(double z,vector<Sphere> spheres, vector<Quad> quads, Lens 
 
             // Reset for right eye.
             if(stereo && x == width) {
-                offset = -width / 10.0;
+                off = -offset;
                 camera = rightCamera;
                 lens = rightLens;
             }
@@ -75,9 +75,9 @@ void RayTracer::trace(double z,vector<Sphere> spheres, vector<Quad> quads, Lens 
                 double newX, newY;
 
                 if (stereo)
-                    newX = (x % width) * (2 * w /width) - w + offset;
+                    newX = (x % width) * (2 * w /width) - w + off;
                 else
-                    newX = x*(2 * w / width) + offset - w;
+                    newX = x*(2 * w / width) + off - w;
 
                 newY = y*(2*h / height) - h;
 

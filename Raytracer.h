@@ -36,7 +36,8 @@ public:
      *                    Includes TRACE, SPHERE, PCONCAVE, BICONCAVE, PCONVEX, and BICONVEX.
      *                    See Util.h for destrictions of traceTypes.
     */
-    void trace(double z, vector<Sphere> spheres, vector<Quad> quads, Lens lens, Vector3 light, bool stereo, bool DoF, int samples, string file, int traceType);
+    void trace(double z, double offset, vector<Sphere> spheres, vector<Quad> quads, Lens lens, 
+                Vector3 light, bool stereo, bool DoF, int samples, string file, int traceType);
 
     // Find the closest sphere with an intersection with the ray.
     Sphere* checkSphereIntersect(Ray ray, vector<Sphere> &spheres);

@@ -1,6 +1,6 @@
 #include "Util.h"
 
-double toMM(int width, double value){ return value*(63.0/(width/10.0)); }
+double toMM(double offset, double value){ return value*(63.0/offset); }
 
 double deg_to_rad(double deg) { return deg * PI / 180.0; }
 
